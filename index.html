@@ -100,6 +100,7 @@
 
     <div id="protected-app-views" class="hidden space-y-6">
 
+      <!-- PAGE 1: INVENTORY -->
       <div id="page-1" class="space-y-6">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-4">
@@ -112,7 +113,7 @@
           <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-4">
             <div class="p-3 bg-blue-50 text-blue-600 rounded-lg"><i class="fa-solid fa-building text-xl"></i></div>
             <div>
-              <p class="text-xs font-medium text-slate-500 uppercase">People Asking</p>
+              <p class="text-xs font-medium text-slate-500 uppercase">Prospect Companies</p>
               <p id="stat-prospects" class="text-2xl font-bold text-slate-900">0</p>
             </div>
           </div>
@@ -223,12 +224,13 @@
         </div>
       </div>
 
+      <!-- PAGE 2: SEARCHABLE COMPARE ENGINE -->
       <div id="page-2" class="hidden space-y-6">
         <div class="bg-gradient-to-r from-indigo-900 via-slate-900 to-indigo-950 rounded-2xl p-6 text-white shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <span class="bg-indigo-500/30 text-indigo-200 border border-indigo-400/30 px-2.5 py-0.5 rounded-full text-xs font-semibold">Training & Consistency Analysis</span>
             <h2 class="text-xl font-bold mt-1">Side-by-Side Question & Answer Comparison</h2>
-            <p class="text-xs text-slate-300 mt-0.5">Select any two questions to compare answer consistency, depth, and tone across team members.</p>
+            <p class="text-xs text-slate-300 mt-0.5">Filter with real-time keyword search to compare answer consistency, depth, and tone across representatives.</p>
           </div>
           <button onclick="autoPickSimilarPair()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-xl shadow transition flex items-center space-x-2">
             <i class="fa-solid fa-wand-magic-sparkles"></i>
@@ -237,26 +239,44 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Question A Searchable Selector -->
           <div class="bg-white p-5 rounded-2xl border border-indigo-200 shadow-sm space-y-3">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 flex items-center space-x-1.5">
                 <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs">A</span>
-                <span>Question A</span>
+                <span>Question A Selector</span>
               </span>
               <span id="cmp-badge-a" class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-medium">Select Question</span>
             </div>
+            
+            <!-- Real-time Filter Input A -->
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
+              <input type="text" id="search-q1" oninput="populateComparisonDropdowns()" placeholder="Type to filter Question A list..." 
+                class="w-full pl-9 pr-3 py-2 bg-indigo-50/50 border border-indigo-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none transition">
+            </div>
+
             <select id="select-q1" onchange="updateComparisonView()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-800 font-medium focus:ring-2 focus:ring-indigo-500">
             </select>
           </div>
 
+          <!-- Question B Searchable Selector -->
           <div class="bg-white p-5 rounded-2xl border border-purple-200 shadow-sm space-y-3">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold uppercase tracking-wider text-purple-600 flex items-center space-x-1.5">
                 <span class="w-5 h-5 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-xs">B</span>
-                <span>Question B</span>
+                <span>Question B Selector</span>
               </span>
               <span id="cmp-badge-b" class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-medium">Select Question</span>
             </div>
+
+            <!-- Real-time Filter Input B -->
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
+              <input type="text" id="search-q2" oninput="populateComparisonDropdowns()" placeholder="Type to filter Question B list..." 
+                class="w-full pl-9 pr-3 py-2 bg-purple-50/50 border border-purple-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-purple-500 focus:bg-white focus:outline-none transition">
+            </div>
+
             <select id="select-q2" onchange="updateComparisonView()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-800 font-medium focus:ring-2 focus:ring-purple-500">
             </select>
           </div>
@@ -328,6 +348,7 @@
         </div>
       </div>
 
+      <!-- PAGE 3: QUESTION FREQUENCY -->
       <div id="page-3" class="hidden space-y-6">
         <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-6 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
@@ -380,6 +401,7 @@
         </div>
       </div>
 
+      <!-- PAGE 4: SUGGESTED 3-WAY CLUSTERS -->
       <div id="page-4" class="hidden space-y-6">
         <div class="bg-gradient-to-r from-amber-950 via-slate-900 to-indigo-950 text-white p-6 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
@@ -954,6 +976,21 @@
       }
     };
 
+    document.addEventListener('DOMContentLoaded', () => {
+      populateFilterOptions();
+      applyFilters();
+    });
+
+    window.showNotification = function(title, message) {
+      const banner = document.getElementById('notification-banner');
+      document.getElementById('notification-title').textContent = title;
+      document.getElementById('notification-message').textContent = message;
+      banner.classList.remove('translate-x-full', 'opacity-0');
+      setTimeout(() => {
+        banner.classList.add('translate-x-full', 'opacity-0');
+      }, 3500);
+    };
+
     function filterByCategoryAndJump(categoryName) {
       switchTab('p1');
       document.getElementById('filter-topic').value = categoryName;
@@ -1298,31 +1335,62 @@
       const select1 = document.getElementById('select-q1');
       const select2 = document.getElementById('select-q2');
 
-      select1.innerHTML = window.currentData.map(d => `<option value="${d.id}" ${d.id === selectedQ1Id ? 'selected' : ''}>[#${d.id}] ${d.askedBy}: ${d.question.substring(0, 60)}...</option>`).join('');
-      select2.innerHTML = window.currentData.map(d => `<option value="${d.id}" ${d.id === selectedQ2Id ? 'selected' : ''}>[#${d.id}] ${d.askedBy}: ${d.question.substring(0, 60)}...</option>`).join('');
+      const filter1 = (document.getElementById('search-q1')?.value || '').toLowerCase().trim();
+      const filter2 = (document.getElementById('search-q2')?.value || '').toLowerCase().trim();
+
+      const items1 = window.currentData.filter(d => !filter1 || 
+        d.question.toLowerCase().includes(filter1) || 
+        d.askedBy.toLowerCase().includes(filter1) ||
+        d.topic.toLowerCase().includes(filter1)
+      );
+
+      const items2 = window.currentData.filter(d => !filter2 || 
+        d.question.toLowerCase().includes(filter2) || 
+        d.askedBy.toLowerCase().includes(filter2) ||
+        d.topic.toLowerCase().includes(filter2)
+      );
+
+      select1.innerHTML = items1.map(d => `<option value="${d.id}" ${d.id === selectedQ1Id ? 'selected' : ''}>[#${d.id}] ${d.askedBy}: ${d.question.substring(0, 60)}...</option>`).join('');
+      select2.innerHTML = items2.map(d => `<option value="${d.id}" ${d.id === selectedQ2Id ? 'selected' : ''}>[#${d.id}] ${d.askedBy}: ${d.question.substring(0, 60)}...</option>`).join('');
     }
 
-  function calculateSimilarity(text1, text2) {
-  // 1. Removes common filler words (stop words)
-  const stopWords = new Set(['what', 'does', 'flex', 'this', 'that', 'with', 'from', 'have', 'your', 'about', 'can', 'will', 'show', 'for', 'the', 'and', 'are']);
-  
-  // 2. Tokenizes text: converts to lowercase, strips punctuation, and breaks into individual words
-  const tokenize = str => str.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 2 && !stopWords.has(w));
-  
-  const words1 = tokenize(text1);
-  const words2 = tokenize(text2);
+    // ENHANCED WORD OVERLAP SIMILARITY ALGORITHM
+    function calculateSimilarity(text1, text2) {
+      const stopWords = new Set([
+        'what', 'does', 'flex', 'this', 'that', 'with', 'from', 'have', 'your', 
+        'about', 'can', 'will', 'show', 'for', 'the', 'and', 'are', 'how', 'is', 
+        'could', 'would', 'should', 'been', 'being', 'each', 'other'
+      ]);
+      
+      const tokenize = str => str.toLowerCase()
+        .replace(/[^\w\s]/g, '')
+        .split(/\s+/)
+        .filter(w => w.length > 2 && !stopWords.has(w));
+      
+      const words1 = tokenize(text1);
+      const words2 = tokenize(text2);
 
-  // 3. Converts word arrays into unique Sets (ignoring word order and sentence structure)
-  const set1 = new Set(words1);
-  const set2 = new Set(words2);
+      const set1 = new Set(words1);
+      const set2 = new Set(words2);
 
-  // 4. Calculates Jaccard Index: (Common Unique Words) / (Total Combined Unique Words)
-  const intersection = new Set([...set1].filter(x => set2.has(x)));
-  const union = new Set([...set1, ...set2]);
+      if (set1.size === 0 || set2.size === 0) return 0;
 
-  if (union.size === 0) return 0;
-  return Math.round((intersection.size / union.size) * 100);
-}
+      const intersection = new Set([...set1].filter(x => set2.has(x)));
+
+      // Overlap Coefficient (Intersection over size of smaller set)
+      const minSetSize = Math.min(set1.size, set2.size);
+      const overlapScore = intersection.size / minSetSize;
+
+      // Jaccard Score
+      const union = new Set([...set1, ...set2]);
+      const jaccardScore = intersection.size / union.size;
+
+      // Blended Score (70% Overlap + 30% Jaccard)
+      const blendedScore = (overlapScore * 0.7) + (jaccardScore * 0.3);
+
+      return Math.round(blendedScore * 100);
+    }
+
     function updateComparisonView() {
       selectedQ1Id = parseInt(document.getElementById('select-q1').value);
       selectedQ2Id = parseInt(document.getElementById('select-q2').value);
