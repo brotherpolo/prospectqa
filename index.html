@@ -320,7 +320,6 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Question A Live Combobox Search -->
           <div class="bg-white p-5 rounded-2xl border border-indigo-200 shadow-sm space-y-3 relative">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 flex items-center space-x-1.5">
@@ -343,7 +342,6 @@
             </div>
           </div>
 
-          <!-- Question B Live Combobox Search -->
           <div class="bg-white p-5 rounded-2xl border border-purple-200 shadow-sm space-y-3 relative">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold uppercase tracking-wider text-purple-600 flex items-center space-x-1.5">
@@ -664,7 +662,6 @@
             <p class="text-xs text-slate-500">Search and select ANY two cards from your entire dataset to inspect full text and mathematical similarity breakdown.</p>
           </div>
 
-          <!-- Dual Live Search Comboboxes for Page 5 Inspector -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div class="space-y-1.5 relative">
               <label class="block text-xs font-bold text-indigo-700 uppercase tracking-wider">Inspector Card A</label>
@@ -1204,7 +1201,6 @@
       updateP5ComboboxInputLabels();
       runFormulaInspector();
 
-      // Global Outside Click Handler for Comboboxes
       document.addEventListener('click', (e) => {
         if (!e.target.closest('#page-2 .relative')) {
           document.getElementById('combobox-q1-results')?.classList.add('hidden');
@@ -1736,7 +1732,7 @@
       }
     }
 
-   function calculateSimilarity(text1, text2) {
+    function calculateSimilarity(text1, text2) {
   // 1. Removes common filler words (stop words)
   const stopWords = new Set(['what', 'does', 'flex', 'this', 'that', 'with', 'from', 'have', 'your', 'about', 'can', 'will', 'show', 'for', 'the', 'and', 'are']);
   
@@ -1793,6 +1789,7 @@
       generateCoachingTakeaways(itemA, itemB, simScore);
     }
 
+    // DYNAMIC RULE EVALUATOR FOR COACHING TAKEAWAYS
     function generateCoachingTakeaways(itemA, itemB, simScore) {
       const container = document.getElementById('coaching-takeaways');
       const sameRep = itemA.answeredBy === itemB.answeredBy;
@@ -1802,28 +1799,47 @@
       const wordsB = itemB.answer.split(' ').length;
       const threshold = window.insightConfig.shortWordThreshold || 15;
 
-      let customRuleOutput = "";
+      // Evaluates ALL enabled rules dynamically
+      let activeRulesHTML = "";
       if (window.insightConfig.customRules) {
-        window.insightConfig.customRules.filter(r => r.enabled).forEach(r => {
-          if (r.id === 1 && (wordsA < threshold || wordsB < threshold)) {
-            customRuleOutput += `<li class="text-amber-700 font-medium mt-1"><i class="fa-solid fa-flag mr-1"></i>One response is below ${threshold} words limit.</li>`;
-          }
-        });
+        const activeRules = window.insightConfig.customRules.filter(r => r.enabled);
+        if (activeRules.length > 0) {
+          activeRulesHTML = activeRules.map(r => {
+            let detailNote = "";
+            if (r.id === 1 && (wordsA < threshold || wordsB < threshold)) {
+              detailNote = ` (Answer length: ${wordsA} vs ${wordsB} words)`;
+            }
+            return `<li class="flex items-start space-x-1.5 text-emerald-800 font-medium mt-1 bg-emerald-50/80 p-1.5 rounded-lg border border-emerald-100">
+              <i class="fa-solid fa-circle-check text-emerald-600 text-xs mt-0.5 shrink-0"></i>
+              <span>${r.text}${detailNote}</span>
+            </li>`;
+          }).join('');
+        }
       }
 
       container.innerHTML = `
-        <div class="bg-white p-3.5 rounded-xl border border-slate-200">
-          <strong class="text-slate-800 block mb-1 font-semibold">Representative Consistency</strong>
-          <p class="text-slate-600">${sameRep ? `Handled by <strong>${itemA.answeredBy}</strong>. Evaluate answer consistency.` : `Handled by different reps: <strong>${itemA.answeredBy}</strong> vs <strong>${itemB.answeredBy}</strong>. Compare response completeness.`}</p>
+        <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-1">
+          <strong class="text-slate-800 block font-semibold flex items-center space-x-1.5">
+            <i class="fa-solid fa-user-check text-indigo-600"></i>
+            <span>Representative Consistency</span>
+          </strong>
+          <p class="text-slate-600">${sameRep ? `Handled by <strong>${itemA.answeredBy}</strong>. Evaluate answer consistency.` : `Handled by different reps: <strong>${itemA.answeredBy}</strong> vs <strong>${itemB.answeredBy}</strong>.`}</p>
         </div>
-        <div class="bg-white p-3.5 rounded-xl border border-slate-200">
-          <strong class="text-slate-800 block mb-1 font-semibold">Topic Alignment</strong>
+        <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-1">
+          <strong class="text-slate-800 block font-semibold flex items-center space-x-1.5">
+            <i class="fa-solid fa-tag text-purple-600"></i>
+            <span>Topic Alignment</span>
+          </strong>
           <p class="text-slate-600">${sameTopic ? `Both fall under <strong>${itemA.topic}</strong>.` : `Cross-category comparison (${itemA.topic} vs ${itemB.topic}).`}</p>
         </div>
-        <div class="bg-white p-3.5 rounded-xl border border-slate-200">
-          <strong class="text-slate-800 block mb-1 font-semibold">Response Length & Depth</strong>
-          <p class="text-slate-600">Answer A: <strong>${wordsA} words</strong>; Answer B: <strong>${wordsB} words</strong>.</p>
-          <ul class="text-[11px] space-y-0.5">${customRuleOutput}</ul>
+        <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-1.5">
+          <strong class="text-slate-800 block font-semibold flex items-center space-x-1.5">
+            <i class="fa-solid fa-list-check text-emerald-600"></i>
+            <span>Active Coaching Tips</span>
+          </strong>
+          <ul class="text-[11px] space-y-1">
+            ${activeRulesHTML || '<li class="text-slate-400 font-normal">No custom rules active. Toggle or add rules on Page 5.</li>'}
+          </ul>
         </div>
       `;
     }
@@ -2108,7 +2124,8 @@
       window.insightConfig.customRules.push({ id: newId, text: val, enabled: true });
       input.value = '';
       renderInsightRulesList();
-      window.showNotification("Rule Added", "New coaching tip added to Insights Engine.");
+      if (selectedQ1Id && selectedQ2Id) updateComparisonView();
+      window.showNotification("Rule Added", "New coaching tip added and activated across comparison views.");
     }
 
     function runFormulaInspector() {
