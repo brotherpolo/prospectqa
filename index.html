@@ -35,7 +35,6 @@
   
   <aside id="mobile-sidebar" class="fixed top-0 left-0 bottom-0 w-72 bg-slate-900 text-white z-50 transform -translate-x-full transition-transform duration-300 shadow-2xl flex flex-col justify-between p-5 lg:hidden">
     <div class="space-y-6">
-      <!-- Mobile Header Logo & Close Button -->
       <div class="flex items-center justify-between border-b border-slate-800 pb-4">
         <div class="flex items-center space-x-3">
           <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-lg shadow">
@@ -67,6 +66,9 @@
         <button id="mobile-tab-p4" onclick="switchTab('p4')" class="w-full h-10 px-3 rounded-xl text-xs font-semibold flex items-center justify-between text-slate-300 hover:text-white hover:bg-slate-800 transition">
           <span class="flex items-center space-x-2.5"><i class="fa-solid fa-wand-magic-sparkles text-amber-400 w-4"></i><span>Suggested Clusters</span></span>
           <span id="mobile-nav-suggested-badge" class="bg-amber-500 text-slate-900 font-bold px-2 py-0.5 rounded-full text-[10px]">0</span>
+        </button>
+        <button id="mobile-tab-p5" onclick="switchTab('p5')" class="w-full h-10 px-3 rounded-xl text-xs font-semibold flex items-center justify-between text-slate-300 hover:text-white hover:bg-slate-800 transition">
+          <span class="flex items-center space-x-2.5"><i class="fa-solid fa-sliders text-emerald-400 w-4"></i><span>Insights Engine</span></span>
         </button>
       </div>
 
@@ -102,7 +104,6 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16 gap-2">
         
-        <!-- Left: Logo & Title -->
         <div class="flex items-center space-x-3 shrink-0">
           <button onclick="toggleMobileMenu(true)" class="lg:hidden w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-sm transition">
             <i class="fa-solid fa-bars"></i>
@@ -116,7 +117,7 @@
           </div>
         </div>
 
-        <!-- Center: Desktop Navigation Tabs (Consistent h-9 Height) -->
+        <!-- Desktop Navigation Tabs -->
         <nav class="hidden lg:flex items-center space-x-1 bg-slate-800/90 p-1 rounded-xl border border-slate-700/60 shadow-inner">
           <button id="tab-p1" onclick="switchTab('p1')" class="h-9 px-3.5 rounded-lg text-xs font-semibold transition flex items-center space-x-2 bg-indigo-600 text-white shadow">
             <i class="fa-solid fa-magnifying-glass text-xs"></i>
@@ -136,9 +137,12 @@
             <span>Suggested Clusters</span>
             <span id="nav-suggested-badge" class="ml-1 bg-amber-500 text-slate-900 font-bold px-1.5 py-0.5 rounded-full text-[10px] leading-none">0</span>
           </button>
+          <button id="tab-p5" onclick="switchTab('p5')" class="h-9 px-3.5 rounded-lg text-xs font-semibold transition flex items-center space-x-2 text-slate-300 hover:text-white hover:bg-slate-700/70">
+            <i class="fa-solid fa-sliders text-emerald-400 text-xs"></i>
+            <span>Insights Engine</span>
+          </button>
         </nav>
 
-        <!-- Right: Action Buttons (Consistent h-9 Height & Alignment) -->
         <div class="flex items-center space-x-2 shrink-0">
           <button onclick="openCategoryModal()" class="hidden md:flex h-9 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700/80 px-3 rounded-xl text-xs font-semibold items-center space-x-1.5 transition shadow-sm">
             <i class="fa-solid fa-tags text-indigo-400"></i>
@@ -316,7 +320,6 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Question A Searchable Selector -->
           <div class="bg-white p-5 rounded-2xl border border-indigo-200 shadow-sm space-y-3">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 flex items-center space-x-1.5">
@@ -336,7 +339,6 @@
             </select>
           </div>
 
-          <!-- Question B Searchable Selector -->
           <div class="bg-white p-5 rounded-2xl border border-purple-200 shadow-sm space-y-3">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold uppercase tracking-wider text-purple-600 flex items-center space-x-1.5">
@@ -568,6 +570,99 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- PAGE 5: INSIGHTS ENGINE & RULE MANAGER -->
+      <div id="page-5" class="hidden space-y-6">
+        <div class="bg-gradient-to-r from-emerald-950 via-slate-900 to-indigo-950 text-white p-6 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <span class="bg-emerald-500/30 text-emerald-200 border border-emerald-400/30 px-2.5 py-0.5 rounded-full text-xs font-semibold flex items-center space-x-1.5 w-max mb-1">
+              <i class="fa-solid fa-sliders text-emerald-400"></i>
+              <span>Algorithm Configurator & Rule Engine</span>
+            </span>
+            <h2 class="text-xl font-bold">Insights Engine & Rule Manager</h2>
+            <p class="text-xs text-slate-300 mt-0.5">Inspect how training takeaways are calculated and tweak parameters or custom feedback rules in real-time.</p>
+          </div>
+          <button onclick="resetInsightEngineDefaults()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-emerald-400/40 font-bold text-xs rounded-xl shadow transition flex items-center space-x-1.5">
+            <i class="fa-solid fa-rotate-left text-emerald-400"></i>
+            <span>Reset Weights</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Parameter Sliders -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4 lg:col-span-1">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center space-x-1.5 border-b border-slate-100 pb-2">
+              <i class="fa-solid fa-sliders text-indigo-600"></i>
+              <span>Formula Weights & Thresholds</span>
+            </h3>
+
+            <div class="space-y-4 text-xs">
+              <div>
+                <div class="flex justify-between font-semibold text-slate-700 mb-1">
+                  <span>Overlap Weight Ratio:</span>
+                  <span id="lbl-overlap-weight" class="text-indigo-600 font-bold">70%</span>
+                </div>
+                <input type="range" id="cfg-overlap-weight" min="0" max="100" value="70" oninput="updateInsightSettings()" class="w-full accent-indigo-600">
+                <p class="text-[10px] text-slate-400 mt-0.5">Weights smaller-question coverage within longer text.</p>
+              </div>
+
+              <div>
+                <div class="flex justify-between font-semibold text-slate-700 mb-1">
+                  <span>Jaccard Vocabulary Weight:</span>
+                  <span id="lbl-jaccard-weight" class="text-purple-600 font-bold">30%</span>
+                </div>
+                <input type="range" id="cfg-jaccard-weight" min="0" max="100" value="30" oninput="updateInsightSettings()" class="w-full accent-purple-600">
+                <p class="text-[10px] text-slate-400 mt-0.5">Weights total shared vocabulary match.</p>
+              </div>
+
+              <div class="pt-2 border-t border-slate-100">
+                <div class="flex justify-between font-semibold text-slate-700 mb-1">
+                  <span>Short Answer Length Threshold:</span>
+                  <span id="lbl-word-threshold" class="text-amber-600 font-bold">15 words</span>
+                </div>
+                <input type="range" id="cfg-word-threshold" min="5" max="40" value="15" oninput="updateInsightSettings()" class="w-full accent-amber-500">
+                <p class="text-[10px] text-slate-400 mt-0.5">Answers below this count trigger "Brief Answer" coaching flags.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Custom Rule Manager -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4 lg:col-span-2 flex flex-col justify-between">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center space-x-1.5">
+                  <i class="fa-solid fa-list-check text-emerald-600"></i>
+                  <span>Active Coaching Rules</span>
+                </h3>
+                <span class="text-[10px] font-semibold bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full border border-emerald-200">Rule-Based Feedback</span>
+              </div>
+
+              <div id="insight-rules-list" class="space-y-2 max-h-56 overflow-y-auto pr-1"></div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 flex items-center space-x-2">
+              <input type="text" id="new-rule-text" placeholder="Type custom coaching rule tip..." class="flex-grow bg-slate-50 border border-slate-300 rounded-lg py-1.5 px-3 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+              <button onclick="addCustomInsightRule()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-3 py-1.5 rounded-lg text-xs transition shrink-0">
+                <i class="fa-solid fa-plus mr-1"></i> Add Tip
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Formula Inspector Workbench -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-100 pb-3 gap-2">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900">Live Formula Inspector Workbench</h3>
+              <p class="text-xs text-slate-500">Select any question pair to see the exact step-by-step breakdown of how insights are generated.</p>
+            </div>
+            <select id="p5-pair-select" onchange="runFormulaInspector()" class="bg-slate-50 border border-slate-300 rounded-xl p-2 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-indigo-500">
+            </select>
+          </div>
+
+          <div id="inspector-output" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs"></div>
         </div>
       </div>
 
@@ -971,6 +1066,18 @@
     let isSignUpMode = false;
     let onlyMyQuestionsFilter = false;
 
+    // Configurable Insight Parameters
+    window.insightConfig = {
+      overlapRatio: 70,
+      jaccardRatio: 30,
+      shortWordThreshold: 15,
+      customRules: [
+        { id: 1, text: "Flag answers under word threshold for brevity review", enabled: true },
+        { id: 2, text: "Highlight multi-rep coverage for consistency cross-checks", enabled: true },
+        { id: 3, text: "Flag cross-topic comparisons for potential categorization alignment", enabled: true }
+      ]
+    };
+
     window.SEED_DATA = [
       {"id": 1, "askedBy": "Mark (North Shore Metal)", "question": "Is anything available in the mobile app that cannot be accessed on desktop?", "answer": "Generally, desktop has more capabilities. One mobile-specific feature is voice-to-text for free-text fields. The desktop view can also be accessed through the mobile app.", "answeredBy": "Caroline and Casey", "topic": "Mobile & User Experience", "createdBy": "caroline@company.com"},
       {"id": 2, "askedBy": "Mark (North Shore Metal)", "question": "Can information be added after an incident has been investigated, addressed, and closed?", "answer": "Yes. Form responses can still be edited after the workflow closes, and the system retains a version history of the changes.", "answeredBy": "Caroline", "topic": "Forms & Configurable Workflows", "createdBy": "caroline@company.com"},
@@ -1051,12 +1158,15 @@
         if (typeof window.populateComparisonDropdowns === 'function') window.populateComparisonDropdowns();
         if (typeof window.renderClustersAndFrequency === 'function') window.renderClustersAndFrequency();
         if (typeof window.calculateSuggestedClusters === 'function') window.calculateSuggestedClusters();
+        if (typeof window.populateP5PairSelector === 'function') window.populateP5PairSelector();
       }
     };
 
     document.addEventListener('DOMContentLoaded', () => {
       populateFilterOptions();
       applyFilters();
+      renderInsightRulesList();
+      populateP5PairSelector();
     });
 
     function toggleMobileMenu(show) {
@@ -1093,10 +1203,10 @@
       document.getElementById('page-2').classList.add('hidden');
       document.getElementById('page-3').classList.add('hidden');
       document.getElementById('page-4').classList.add('hidden');
+      document.getElementById('page-5').classList.add('hidden');
 
-      const tabs = ['p1', 'p2', 'p3', 'p4'];
+      const tabs = ['p1', 'p2', 'p3', 'p4', 'p5'];
       
-      // Update Desktop Tabs
       tabs.forEach(t => {
         const btn = document.getElementById(`tab-${t}`);
         if (btn) btn.className = "h-9 px-3.5 rounded-lg text-xs font-semibold transition flex items-center space-x-2 text-slate-300 hover:text-white hover:bg-slate-700/70";
@@ -1104,7 +1214,6 @@
       const activeBtn = document.getElementById(`tab-${tabId}`);
       if (activeBtn) activeBtn.className = "h-9 px-3.5 rounded-lg text-xs font-semibold transition flex items-center space-x-2 bg-indigo-600 text-white shadow";
 
-      // Update Mobile Drawer Tabs
       tabs.forEach(t => {
         const mBtn = document.getElementById(`mobile-tab-${t}`);
         if (mBtn) mBtn.className = "w-full h-10 px-3 rounded-xl text-xs font-semibold flex items-center justify-between text-slate-300 hover:text-white hover:bg-slate-800 transition";
@@ -1122,6 +1231,10 @@
       } else if (tabId === 'p4') {
         document.getElementById('page-4').classList.remove('hidden');
         calculateSuggestedClusters();
+      } else if (tabId === 'p5') {
+        document.getElementById('page-5').classList.remove('hidden');
+        populateP5PairSelector();
+        runFormulaInspector();
       }
 
       toggleMobileMenu(false);
@@ -1183,7 +1296,6 @@
       const user = window.getCurrentUser ? window.getCurrentUser() : null;
 
       window.filteredData = window.currentData.filter(item => {
-        // STRICT QUESTION-ONLY SEARCH
         const matchesSearch = !searchTerm || item.question.toLowerCase().includes(searchTerm);
 
         const matchesAsked = !askedFilter || item.askedBy === askedFilter;
@@ -1385,6 +1497,7 @@
       populateComparisonDropdowns();
       renderClustersAndFrequency();
       calculateSuggestedClusters();
+      populateP5PairSelector();
       closeEditModal();
       window.showNotification("Saved", "Question record successfully updated and synced.");
     }
@@ -1413,6 +1526,7 @@
       populateComparisonDropdowns();
       renderClustersAndFrequency();
       calculateSuggestedClusters();
+      populateP5PairSelector();
       closeDeleteModal();
       window.showNotification("Deleted", "Question record removed and cloud updated.");
     }
@@ -1455,27 +1569,42 @@
       select2.innerHTML = items2.map(d => `<option value="${d.id}" ${d.id === selectedQ2Id ? 'selected' : ''}>[#${d.id}] ${d.askedBy}: ${d.question.substring(0, 60)}...</option>`).join('');
     }
 
-   function calculateSimilarity(text1, text2) {
-  // 1. Removes common filler words (stop words)
-  const stopWords = new Set(['what', 'does', 'flex', 'this', 'that', 'with', 'from', 'have', 'your', 'about', 'can', 'will', 'show', 'for', 'the', 'and', 'are']);
-  
-  // 2. Tokenizes text: converts to lowercase, strips punctuation, and breaks into individual words
-  const tokenize = str => str.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 2 && !stopWords.has(w));
-  
-  const words1 = tokenize(text1);
-  const words2 = tokenize(text2);
+    // DYNAMIC INSIGHT ENGINE CALCULATOR
+    function calculateSimilarity(text1, text2) {
+      const stopWords = new Set([
+        'what', 'does', 'flex', 'this', 'that', 'with', 'from', 'have', 'your', 
+        'about', 'can', 'will', 'show', 'for', 'the', 'and', 'are', 'how', 'is', 
+        'could', 'would', 'should', 'been', 'being', 'each', 'other'
+      ]);
+      
+      const tokenize = str => str.toLowerCase()
+        .replace(/[^\w\s]/g, '')
+        .split(/\s+/)
+        .filter(w => w.length > 2 && !stopWords.has(w));
+      
+      const words1 = tokenize(text1);
+      const words2 = tokenize(text2);
 
-  // 3. Converts word arrays into unique Sets (ignoring word order and sentence structure)
-  const set1 = new Set(words1);
-  const set2 = new Set(words2);
+      const set1 = new Set(words1);
+      const set2 = new Set(words2);
 
-  // 4. Calculates Jaccard Index: (Common Unique Words) / (Total Combined Unique Words)
-  const intersection = new Set([...set1].filter(x => set2.has(x)));
-  const union = new Set([...set1, ...set2]);
+      if (set1.size === 0 || set2.size === 0) return 0;
 
-  if (union.size === 0) return 0;
-  return Math.round((intersection.size / union.size) * 100);
-}
+      const intersection = new Set([...set1].filter(x => set2.has(x)));
+
+      const minSetSize = Math.min(set1.size, set2.size);
+      const overlapScore = intersection.size / minSetSize;
+
+      const union = new Set([...set1, ...set2]);
+      const jaccardScore = intersection.size / union.size;
+
+      const oW = (window.insightConfig.overlapRatio || 70) / 100;
+      const jW = (window.insightConfig.jaccardRatio || 30) / 100;
+
+      const blendedScore = (overlapScore * oW) + (jaccardScore * jW);
+
+      return Math.round(blendedScore * 100);
+    }
 
     function updateComparisonView() {
       selectedQ1Id = parseInt(document.getElementById('select-q1').value);
@@ -1520,6 +1649,19 @@
       const sameRep = itemA.answeredBy === itemB.answeredBy;
       const sameTopic = itemA.topic === itemB.topic;
 
+      const wordsA = itemA.answer.split(' ').length;
+      const wordsB = itemB.answer.split(' ').length;
+      const threshold = window.insightConfig.shortWordThreshold || 15;
+
+      let customRuleOutput = "";
+      if (window.insightConfig.customRules) {
+        window.insightConfig.customRules.filter(r => r.enabled).forEach(r => {
+          if (r.id === 1 && (wordsA < threshold || wordsB < threshold)) {
+            customRuleOutput += `<li class="text-amber-700 font-medium mt-1"><i class="fa-solid fa-flag mr-1"></i>One response is below ${threshold} words limit.</li>`;
+          }
+        });
+      }
+
       container.innerHTML = `
         <div class="bg-white p-3.5 rounded-xl border border-slate-200">
           <strong class="text-slate-800 block mb-1 font-semibold">Representative Consistency</strong>
@@ -1527,11 +1669,12 @@
         </div>
         <div class="bg-white p-3.5 rounded-xl border border-slate-200">
           <strong class="text-slate-800 block mb-1 font-semibold">Topic Alignment</strong>
-          <p class="text-slate-600">${sameTopic ? `Both fall under <strong>${itemA.topic}</strong>.` : `Cross-category comparison (${itemA.topic} vs${itemB.topic}).`}</p>
+          <p class="text-slate-600">${sameTopic ? `Both fall under <strong>${itemA.topic}</strong>.` : `Cross-category comparison (${itemA.topic} vs ${itemB.topic}).`}</p>
         </div>
         <div class="bg-white p-3.5 rounded-xl border border-slate-200">
           <strong class="text-slate-800 block mb-1 font-semibold">Response Length & Depth</strong>
-          <p class="text-slate-600">Answer A is <strong>${itemA.answer.split(' ').length} words</strong>; Answer B is <strong>${itemB.answer.split(' ').length} words</strong>.</p>
+          <p class="text-slate-600">Answer A: <strong>${wordsA} words</strong>; Answer B: <strong>${wordsB} words</strong>.</p>
+          <ul class="text-[11px] space-y-0.5">${customRuleOutput}</ul>
         </div>
       `;
     }
@@ -1748,6 +1891,145 @@
 
       const randomIdx = Math.floor(Math.random() * detectedClusters.length);
       renderMultiComparison(randomIdx);
+    }
+
+    // PAGE 5: INSIGHTS ENGINE LOGIC & RULE MANAGER
+    function updateInsightSettings() {
+      const overlapVal = parseInt(document.getElementById('cfg-overlap-weight').value);
+      const jaccardVal = 100 - overlapVal;
+      document.getElementById('cfg-jaccard-weight').value = jaccardVal;
+
+      document.getElementById('lbl-overlap-weight').textContent = `${overlapVal}%`;
+      document.getElementById('lbl-jaccard-weight').textContent = `${jaccardVal}%`;
+
+      const thresholdVal = parseInt(document.getElementById('cfg-word-threshold').value);
+      document.getElementById('lbl-word-threshold').textContent = `${thresholdVal} words`;
+
+      window.insightConfig.overlapRatio = overlapVal;
+      window.insightConfig.jaccardRatio = jaccardVal;
+      window.insightConfig.shortWordThreshold = thresholdVal;
+
+      runFormulaInspector();
+      if (document.getElementById('select-q1')?.value) updateComparisonView();
+    }
+
+    function resetInsightEngineDefaults() {
+      document.getElementById('cfg-overlap-weight').value = 70;
+      document.getElementById('cfg-jaccard-weight').value = 30;
+      document.getElementById('cfg-word-threshold').value = 15;
+      updateInsightSettings();
+      window.showNotification("Reset Complete", "Restored insight weights to default settings.");
+    }
+
+    function renderInsightRulesList() {
+      const container = document.getElementById('insight-rules-list');
+      if (!container) return;
+
+      container.innerHTML = window.insightConfig.customRules.map(r => `
+        <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between space-x-2 text-xs">
+          <div class="flex items-center space-x-2 flex-grow">
+            <input type="checkbox" ${r.enabled ? 'checked' : ''} onchange="toggleInsightRule(${r.id})" class="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4">
+            <span class="${r.enabled ? 'text-slate-800 font-medium' : 'text-slate-400 line-through'}">${r.text}</span>
+          </div>
+          <button onclick="removeInsightRule(${r.id})" class="text-slate-400 hover:text-rose-600 p-1">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function toggleInsightRule(id) {
+      const rule = window.insightConfig.customRules.find(r => r.id === id);
+      if (rule) rule.enabled = !rule.enabled;
+      renderInsightRulesList();
+      if (document.getElementById('select-q1')?.value) updateComparisonView();
+    }
+
+    function removeInsightRule(id) {
+      window.insightConfig.customRules = window.insightConfig.customRules.filter(r => r.id !== id);
+      renderInsightRulesList();
+      if (document.getElementById('select-q1')?.value) updateComparisonView();
+    }
+
+    function addCustomInsightRule() {
+      const input = document.getElementById('new-rule-text');
+      const val = input.value.trim();
+      if (!val) return;
+
+      const newId = window.insightConfig.customRules.length > 0 ? Math.max(...window.insightConfig.customRules.map(r => r.id)) + 1 : 1;
+      window.insightConfig.customRules.push({ id: newId, text: val, enabled: true });
+      input.value = '';
+      renderInsightRulesList();
+      window.showNotification("Rule Added", "New coaching tip added to Insights Engine.");
+    }
+
+    function populateP5PairSelector() {
+      const select = document.getElementById('p5-pair-select');
+      if (!select || window.currentData.length < 2) return;
+
+      let options = '';
+      for (let i = 0; i < Math.min(window.currentData.length, 8); i++) {
+        for (let j = i + 1; j < Math.min(window.currentData.length, 8); j++) {
+          const q1 = window.currentData[i];
+          const q2 = window.currentData[j];
+          options += `<option value="${q1.id},${q2.id}">[#${q1.id} vs #${q2.id}] ${q1.askedBy.split(' ')[0]} vs ${q2.askedBy.split(' ')[0]}</option>`;
+        }
+      }
+      select.innerHTML = options;
+    }
+
+    function runFormulaInspector() {
+      const select = document.getElementById('p5-pair-select');
+      const container = document.getElementById('inspector-output');
+      if (!select || !container || !select.value) return;
+
+      const [id1, id2] = select.value.split(',').map(Number);
+      const itemA = window.currentData.find(d => d.id === id1) || window.currentData[0];
+      const itemB = window.currentData.find(d => d.id === id2) || window.currentData[1];
+
+      if (!itemA || !itemB) return;
+
+      const stopWords = new Set(['what', 'does', 'flex', 'this', 'that', 'with', 'from', 'have', 'your', 'about', 'can', 'will', 'show', 'for', 'the', 'and', 'are', 'how', 'is']);
+      const tokenize = str => str.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 2 && !stopWords.has(w));
+      
+      const words1 = tokenize(itemA.question);
+      const words2 = tokenize(itemB.question);
+
+      const set1 = new Set(words1);
+      const set2 = new Set(words2);
+      const intersection = new Set([...set1].filter(x => set2.has(x)));
+      const union = new Set([...set1, ...set2]);
+
+      const overlapPct = set1.size && set2.size ? Math.round((intersection.size / Math.min(set1.size, set2.size)) * 100) : 0;
+      const jaccardPct = union.size ? Math.round((intersection.size / union.size) * 100) : 0;
+      const finalSim = calculateSimilarity(itemA.question, itemB.question);
+
+      container.innerHTML = `
+        <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 space-y-2">
+          <span class="font-bold text-indigo-900 block">1. Tokenization & Overlap</span>
+          <p class="text-slate-600">Question A tokens: <code class="bg-white px-1.5 py-0.5 rounded border">${set1.size}</code></p>
+          <p class="text-slate-600">Question B tokens: <code class="bg-white px-1.5 py-0.5 rounded border">${set2.size}</code></p>
+          <p class="text-slate-600">Shared tokens: <strong class="text-indigo-600">${Array.from(intersection).join(', ') || 'None'}</strong></p>
+        </div>
+
+        <div class="bg-purple-50/50 p-4 rounded-xl border border-purple-100 space-y-2">
+          <span class="font-bold text-purple-900 block">2. Weighted Formula Breakdown</span>
+          <p class="text-slate-600">Overlap Score (${window.insightConfig.overlapRatio}% weight): <strong>${overlapPct}%</strong></p>
+          <p class="text-slate-600">Jaccard Score (${window.insightConfig.jaccardRatio}% weight): <strong>${jaccardPct}%</strong></p>
+          <div class="pt-2 border-t border-purple-200/60 font-bold text-slate-900">
+            Final Score = ${finalSim}%
+          </div>
+        </div>
+
+        <div class="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100 space-y-2">
+          <span class="font-bold text-emerald-900 block">3. Resulting Coaching Flags</span>
+          <p class="text-slate-600">Reps: <strong>${itemA.answeredBy}</strong> vs <strong>${itemB.answeredBy}</strong></p>
+          <p class="text-slate-600">Answer Lengths: ${itemA.answer.split(' ').length} words vs ${itemB.answer.split(' ').length} words</p>
+          <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold ${finalSim >= 25 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'}">
+            ${finalSim >= 25 ? 'Qualifies for Cluster' : 'Below 25% Threshold'}
+          </span>
+        </div>
+      `;
     }
 
     function openAuthModal() {
@@ -1994,6 +2276,7 @@
       populateComparisonDropdowns();
       renderClustersAndFrequency();
       calculateSuggestedClusters();
+      populateP5PairSelector();
       closeImportModal();
 
       switchTab('p4');
@@ -2044,6 +2327,13 @@
     window.populateComparisonDropdowns = populateComparisonDropdowns;
     window.renderClustersAndFrequency = renderClustersAndFrequency;
     window.calculateSuggestedClusters = calculateSuggestedClusters;
+    window.updateInsightSettings = updateInsightSettings;
+    window.resetInsightEngineDefaults = resetInsightEngineDefaults;
+    window.toggleInsightRule = toggleInsightRule;
+    window.removeInsightRule = removeInsightRule;
+    window.addCustomInsightRule = addCustomInsightRule;
+    window.populateP5PairSelector = populateP5PairSelector;
+    window.runFormulaInspector = runFormulaInspector;
   </script>
 </body>
 </html>
