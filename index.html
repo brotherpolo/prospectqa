@@ -997,7 +997,7 @@
             const cloudData = snapshot.data();
             if (cloudData && Array.isArray(cloudData.items)) {
               if (typeof window.onDataUpdatedFromCloud === 'function') {
-                window.onDataUpdatedFromCloud(cloudData.items, cloudData.categories);
+                window.onDataUpdatedFromCloud(cloudData.items, cloudData.categories, cloudData.insightConfig);
               }
             }
           } else {
@@ -1053,10 +1053,11 @@
         await setDoc(dataDocRef, {
           items: items,
           categories: categories,
+          insightConfig: window.insightConfig, // SAVES RULES & WEIGHTS TO FIRESTORE
           lastUpdated: new Date().toISOString(),
           updatedBy: currentUser.email || currentUser.uid
         });
-        window.showNotification("Cloud Synced", "Dataset synced to Firestore.");
+        window.showNotification("Cloud Synced", "Dataset and Coaching Rules synced to Firestore.");
       } catch (err) {
         console.error("Firestore sync error:", err);
         window.showNotification("Write Error", "Could not sync to cloud. Verify Firestore Rules.");
@@ -1179,11 +1180,15 @@
     let detectedClusters = [];
     let activeClusterIdx = 0;
 
-    window.onDataUpdatedFromCloud = function(items, categories) {
+    window.onDataUpdatedFromCloud = function(items, categories, insightConfig) {
       if (Array.isArray(items) && items.length > 0) {
         window.currentData = items;
         if (Array.isArray(categories)) {
           window.customCategories = new Set(categories);
+        }
+        if (insightConfig && typeof insightConfig === 'object') {
+          window.insightConfig = insightConfig;
+          if (typeof window.renderInsightRulesList === 'function') window.renderInsightRulesList();
         }
         if (typeof window.populateFilterOptions === 'function') window.populateFilterOptions();
         if (typeof window.applyFilters === 'function') window.applyFilters();
@@ -1736,7 +1741,7 @@
       }
     }
 
-   function calculateSimilarity(text1, text2) {
+      function calculateSimilarity(text1, text2) {
   // 1. Removes common filler words (stop words)
   const stopWords = new Set(['what', 'does', 'flex', 'this', 'that', 'with', 'from', 'have', 'your', 'about', 'can', 'will', 'show', 'for', 'the', 'and', 'are']);
   
@@ -2096,6 +2101,7 @@
 
       runFormulaInspector();
       if (selectedQ1Id && selectedQ2Id) updateComparisonView();
+      if (window.syncCloudDataset) window.syncCloudDataset(window.currentData, Array.from(window.customCategories));
     }
 
     function resetInsightEngineDefaults() {
@@ -2128,12 +2134,14 @@
       if (rule) rule.enabled = !rule.enabled;
       renderInsightRulesList();
       if (selectedQ1Id && selectedQ2Id) updateComparisonView();
+      if (window.syncCloudDataset) window.syncCloudDataset(window.currentData, Array.from(window.customCategories));
     }
 
     function removeInsightRule(id) {
       window.insightConfig.customRules = window.insightConfig.customRules.filter(r => r.id !== id);
       renderInsightRulesList();
       if (selectedQ1Id && selectedQ2Id) updateComparisonView();
+      if (window.syncCloudDataset) window.syncCloudDataset(window.currentData, Array.from(window.customCategories));
     }
 
     function addCustomInsightRule() {
@@ -2146,7 +2154,8 @@
       input.value = '';
       renderInsightRulesList();
       if (selectedQ1Id && selectedQ2Id) updateComparisonView();
-      window.showNotification("Rule Added", "New coaching tip added and activated across comparison views.");
+      if (window.syncCloudDataset) window.syncCloudDataset(window.currentData, Array.from(window.customCategories));
+      window.showNotification("Rule Added", "New coaching tip added and synced to cloud.");
     }
 
     function runFormulaInspector() {
