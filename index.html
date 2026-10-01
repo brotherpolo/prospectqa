@@ -656,13 +656,13 @@
           <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-100 pb-3 gap-2">
             <div>
               <h3 class="text-sm font-bold text-slate-900">Live Formula Inspector Workbench</h3>
-              <p class="text-xs text-slate-500">Select any question pair to see the exact step-by-step breakdown of how insights are generated.</p>
+              <p class="text-xs text-slate-500">Select any question pair to see full question text, answers, and step-by-step mathematical breakdown.</p>
             </div>
             <select id="p5-pair-select" onchange="runFormulaInspector()" class="bg-slate-50 border border-slate-300 rounded-xl p-2 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-indigo-500">
             </select>
           </div>
 
-          <div id="inspector-output" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs"></div>
+          <div id="inspector-output" class="space-y-4"></div>
         </div>
       </div>
 
@@ -1066,7 +1066,6 @@
     let isSignUpMode = false;
     let onlyMyQuestionsFilter = false;
 
-    // Configurable Insight Parameters
     window.insightConfig = {
       overlapRatio: 70,
       jaccardRatio: 30,
@@ -1569,7 +1568,6 @@
       select2.innerHTML = items2.map(d => `<option value="${d.id}" ${d.id === selectedQ2Id ? 'selected' : ''}>[#${d.id}] ${d.askedBy}: ${d.question.substring(0, 60)}...</option>`).join('');
     }
 
-    // DYNAMIC INSIGHT ENGINE CALCULATOR
     function calculateSimilarity(text1, text2) {
       const stopWords = new Set([
         'what', 'does', 'flex', 'this', 'that', 'with', 'from', 'have', 'your', 
@@ -1893,7 +1891,6 @@
       renderMultiComparison(randomIdx);
     }
 
-    // PAGE 5: INSIGHTS ENGINE LOGIC & RULE MANAGER
     function updateInsightSettings() {
       const overlapVal = parseInt(document.getElementById('cfg-overlap-weight').value);
       const jaccardVal = 100 - overlapVal;
@@ -2005,29 +2002,63 @@
       const finalSim = calculateSimilarity(itemA.question, itemB.question);
 
       container.innerHTML = `
-        <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 space-y-2">
-          <span class="font-bold text-indigo-900 block">1. Tokenization & Overlap</span>
-          <p class="text-slate-600">Question A tokens: <code class="bg-white px-1.5 py-0.5 rounded border">${set1.size}</code></p>
-          <p class="text-slate-600">Question B tokens: <code class="bg-white px-1.5 py-0.5 rounded border">${set2.size}</code></p>
-          <p class="text-slate-600">Shared tokens: <strong class="text-indigo-600">${Array.from(intersection).join(', ') || 'None'}</strong></p>
-        </div>
+        <!-- Tier 1: Question & Answer Text Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <div class="bg-indigo-50/40 p-4 rounded-xl border border-indigo-100 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-indigo-900 flex items-center space-x-1.5">
+                <span class="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px]">A</span>
+                <span>Question #${itemA.id}</span>
+              </span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] bg-indigo-100 text-indigo-700 font-semibold">${itemA.topic}</span>
+            </div>
+            <p class="text-[11px] text-slate-500 font-medium">Asked By: <strong class="text-slate-800">${itemA.askedBy}</strong></p>
+            <p class="text-xs font-semibold text-slate-900 bg-white p-2.5 rounded-lg border border-slate-200">${itemA.question}</p>
+            <div class="text-[11px] text-slate-600 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed">${itemA.answer}</div>
+            <p class="text-[10px] text-slate-400">Answered By: <strong class="text-indigo-600">${itemA.answeredBy}</strong> (${itemA.answer.split(' ').length} words)</p>
+          </div>
 
-        <div class="bg-purple-50/50 p-4 rounded-xl border border-purple-100 space-y-2">
-          <span class="font-bold text-purple-900 block">2. Weighted Formula Breakdown</span>
-          <p class="text-slate-600">Overlap Score (${window.insightConfig.overlapRatio}% weight): <strong>${overlapPct}%</strong></p>
-          <p class="text-slate-600">Jaccard Score (${window.insightConfig.jaccardRatio}% weight): <strong>${jaccardPct}%</strong></p>
-          <div class="pt-2 border-t border-purple-200/60 font-bold text-slate-900">
-            Final Score = ${finalSim}%
+          <div class="bg-purple-50/40 p-4 rounded-xl border border-purple-100 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-purple-900 flex items-center space-x-1.5">
+                <span class="w-5 h-5 rounded-full bg-purple-600 text-white flex items-center justify-center text-[10px]">B</span>
+                <span>Question #${itemB.id}</span>
+              </span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] bg-purple-100 text-purple-700 font-semibold">${itemB.topic}</span>
+            </div>
+            <p class="text-[11px] text-slate-500 font-medium">Asked By: <strong class="text-slate-800">${itemB.askedBy}</strong></p>
+            <p class="text-xs font-semibold text-slate-900 bg-white p-2.5 rounded-lg border border-slate-200">${itemB.question}</p>
+            <div class="text-[11px] text-slate-600 bg-white p-2.5 rounded-lg border border-slate-200 leading-relaxed">${itemB.answer}</div>
+            <p class="text-[10px] text-slate-400">Answered By: <strong class="text-purple-600">${itemB.answeredBy}</strong> (${itemB.answer.split(' ').length} words)</p>
           </div>
         </div>
 
-        <div class="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100 space-y-2">
-          <span class="font-bold text-emerald-900 block">3. Resulting Coaching Flags</span>
-          <p class="text-slate-600">Reps: <strong>${itemA.answeredBy}</strong> vs <strong>${itemB.answeredBy}</strong></p>
-          <p class="text-slate-600">Answer Lengths: ${itemA.answer.split(' ').length} words vs ${itemB.answer.split(' ').length} words</p>
-          <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold ${finalSim >= 25 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'}">
-            ${finalSim >= 25 ? 'Qualifies for Cluster' : 'Below 25% Threshold'}
-          </span>
+        <!-- Tier 2: Mathematical Breakdown Panels -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+            <span class="font-bold text-slate-800 block">1. Tokenization & Overlap</span>
+            <p class="text-slate-600">Question A tokens: <code class="bg-white px-1.5 py-0.5 rounded border font-mono text-[11px]">${set1.size}</code></p>
+            <p class="text-slate-600">Question B tokens: <code class="bg-white px-1.5 py-0.5 rounded border font-mono text-[11px]">${set2.size}</code></p>
+            <p class="text-slate-600">Shared tokens: <strong class="text-indigo-600">${Array.from(intersection).join(', ') || 'None'}</strong></p>
+          </div>
+
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+            <span class="font-bold text-slate-800 block">2. Weighted Formula Breakdown</span>
+            <p class="text-slate-600">Overlap Score (${window.insightConfig.overlapRatio}% weight): <strong>${overlapPct}%</strong></p>
+            <p class="text-slate-600">Jaccard Score (${window.insightConfig.jaccardRatio}% weight): <strong>${jaccardPct}%</strong></p>
+            <div class="pt-2 border-t border-slate-200 font-bold text-slate-900">
+              Final Score = ${finalSim}%
+            </div>
+          </div>
+
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+            <span class="font-bold text-slate-800 block">3. Resulting Coaching Flags</span>
+            <p class="text-slate-600">Reps: <strong>${itemA.answeredBy}</strong> vs <strong>${itemB.answeredBy}</strong></p>
+            <p class="text-slate-600">Answer Lengths: ${itemA.answer.split(' ').length} words vs ${itemB.answer.split(' ').length} words</p>
+            <span class="inline-block px-2.5 py-1 rounded-lg text-[10px] font-bold ${finalSim >= 25 ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-slate-200 text-slate-600'}">
+              ${finalSim >= 25 ? 'Qualifies for Cluster (>25%)' : 'Below 25% Threshold'}
+            </span>
+          </div>
         </div>
       `;
     }
