@@ -305,7 +305,7 @@
         </div>
       </div>
 
-      <!-- PAGE 2: LIVE SEARCH COMBOBOX COMPARE ENGINE (WITH AUTO-CLEAR) -->
+      <!-- PAGE 2: LIVE SEARCH COMBOBOX COMPARE ENGINE -->
       <div id="page-2" class="hidden space-y-6">
         <div class="bg-gradient-to-r from-indigo-900 via-slate-900 to-indigo-950 rounded-2xl p-6 text-white shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
@@ -320,7 +320,6 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Question A Live Combobox Search -->
           <div class="bg-white p-5 rounded-2xl border border-indigo-200 shadow-sm space-y-3 relative">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 flex items-center space-x-1.5">
@@ -343,7 +342,6 @@
             </div>
           </div>
 
-          <!-- Question B Live Combobox Search -->
           <div class="bg-white p-5 rounded-2xl border border-purple-200 shadow-sm space-y-3 relative">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold uppercase tracking-wider text-purple-600 flex items-center space-x-1.5">
@@ -486,7 +484,7 @@
         </div>
       </div>
 
-      <!-- PAGE 4: SUGGESTED 3-WAY CLUSTERS -->
+      <!-- PAGE 4: SUGGESTED 3-WAY CLUSTERS (SCROLLABLE UNLIMITED LIST) -->
       <div id="page-4" class="hidden space-y-6">
         <div class="bg-gradient-to-r from-amber-950 via-slate-900 to-indigo-950 text-white p-6 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
@@ -515,7 +513,8 @@
             <i class="fa-solid fa-layer-group text-indigo-600"></i>
             <span>Select Suggested Cluster to Compare (Showing >25% Similarity Pairs & Triplets)</span>
           </h3>
-          <div id="p4-cluster-list" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
+          <!-- Scrollable Grid Container -->
+          <div id="p4-cluster-list" class="grid grid-cols-1 md:grid-cols-3 gap-3 max-h-[380px] overflow-y-auto pr-1"></div>
         </div>
 
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-6">
@@ -1741,7 +1740,7 @@
       }
     }
 
-   function calculateSimilarity(text1, text2) {
+     function calculateSimilarity(text1, text2) {
   // 1. Removes common filler words (stop words)
   const stopWords = new Set(['what', 'does', 'flex', 'this', 'that', 'with', 'from', 'have', 'your', 'about', 'can', 'will', 'show', 'for', 'the', 'and', 'are']);
   
@@ -1762,6 +1761,7 @@
   if (union.size === 0) return 0;
   return Math.round((intersection.size / union.size) * 100);
 }
+
 
     function updateComparisonView() {
       const itemA = window.currentData.find(d => d.id === selectedQ1Id) || window.currentData[0];
@@ -1843,9 +1843,11 @@
               note = ` (${itemA.topic} vs ${itemB.topic})`;
             }
           }
-          // Default Custom User Tips (Trigger on general keywords or active tip)
+          // Default Custom User Guidance Tips (>10 characters)
           else {
-            triggered = true;
+            if (r.text.trim().length > 10) {
+              triggered = true;
+            }
           }
 
           if (triggered) {
@@ -2026,7 +2028,7 @@
         return;
       }
 
-      clusterList.innerHTML = detectedClusters.slice(0, 100).map((c, idx) => `
+      clusterList.innerHTML = detectedClusters.map((c, idx) => `
         <div onclick="renderMultiComparison(${idx})" class="p-3.5 ${idx === activeClusterIdx ? 'bg-indigo-50/90 border-indigo-500 shadow-sm' : 'bg-slate-50 hover:bg-indigo-50/50 border-slate-200'} border rounded-xl cursor-pointer transition space-y-2 group">
           <div class="flex items-center justify-between">
             <span class="text-[11px] font-bold px-2 py-0.5 rounded ${idx === activeClusterIdx ? 'bg-indigo-600 text-white' : 'bg-indigo-100 text-indigo-700'}">${c.sim}% Avg Similarity</span>
