@@ -338,7 +338,6 @@
                 <i class="fa-solid fa-xmark"></i>
               </button>
 
-              <!-- Floating Live Results Dropdown -->
               <div id="combobox-q1-results" class="hidden absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-xl z-30 max-h-60 overflow-y-auto divide-y divide-slate-100 text-xs">
               </div>
             </div>
@@ -362,14 +361,12 @@
                 <i class="fa-solid fa-xmark"></i>
               </button>
 
-              <!-- Floating Live Results Dropdown -->
               <div id="combobox-q2-results" class="hidden absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-xl z-30 max-h-60 overflow-y-auto divide-y divide-slate-100 text-xs">
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Comparison Display Card -->
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
           <div class="bg-slate-900 text-white px-6 py-4 flex flex-col sm:flex-row items-center justify-between border-b border-slate-800 gap-3">
             <div class="flex items-center space-x-3">
@@ -584,7 +581,7 @@
         </div>
       </div>
 
-      <!-- PAGE 5: INSIGHTS ENGINE & RULE MANAGER -->
+      <!-- PAGE 5: INSIGHTS ENGINE & RULE MANAGER WITH SEARCHABLE WORKBENCH -->
       <div id="page-5" class="hidden space-y-6">
         <div class="bg-gradient-to-r from-emerald-950 via-slate-900 to-indigo-950 text-white p-6 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
@@ -660,17 +657,43 @@
           </div>
         </div>
 
+        <!-- SEARCHABLE FORMULA INSPECTOR WORKBENCH -->
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
-          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-100 pb-3 gap-2">
-            <div>
-              <h3 class="text-sm font-bold text-slate-900">Live Formula Inspector Workbench</h3>
-              <p class="text-xs text-slate-500">Select any question pair to see full question text, answers, and step-by-step mathematical breakdown.</p>
-            </div>
-            <select id="p5-pair-select" onchange="runFormulaInspector()" class="bg-slate-50 border border-slate-300 rounded-xl p-2 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-indigo-500">
-            </select>
+          <div class="border-b border-slate-100 pb-3">
+            <h3 class="text-sm font-bold text-slate-900">Live Formula Inspector Workbench</h3>
+            <p class="text-xs text-slate-500">Search and select ANY two cards from your entire dataset to inspect full text and mathematical similarity breakdown.</p>
           </div>
 
-          <div id="inspector-output" class="space-y-4"></div>
+          <!-- Dual Live Search Comboboxes for Page 5 Inspector -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div class="space-y-1.5 relative">
+              <label class="block text-xs font-bold text-indigo-700 uppercase tracking-wider">Inspector Card A</label>
+              <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                <input type="text" id="p5-combobox-q1-input" onfocus="showP5ComboboxList('q1')" oninput="onP5ComboboxInput('q1')" placeholder="Search card A by keywords..." 
+                  class="w-full pl-9 pr-8 py-2 bg-indigo-50/50 border border-indigo-200 rounded-xl text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none transition">
+                <button onclick="clearP5Combobox('q1')" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 text-xs">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div id="p5-combobox-q1-results" class="hidden absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-xl z-30 max-h-60 overflow-y-auto divide-y divide-slate-100 text-xs"></div>
+              </div>
+            </div>
+
+            <div class="space-y-1.5 relative">
+              <label class="block text-xs font-bold text-purple-700 uppercase tracking-wider">Inspector Card B</label>
+              <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                <input type="text" id="p5-combobox-q2-input" onfocus="showP5ComboboxList('q2')" oninput="onP5ComboboxInput('q2')" placeholder="Search card B by keywords..." 
+                  class="w-full pl-9 pr-8 py-2 bg-purple-50/50 border border-purple-200 rounded-xl text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-purple-500 focus:bg-white focus:outline-none transition">
+                <button onclick="clearP5Combobox('q2')" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 text-xs">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div id="p5-combobox-q2-results" class="hidden absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-xl z-30 max-h-60 overflow-y-auto divide-y divide-slate-100 text-xs"></div>
+              </div>
+            </div>
+          </div>
+
+          <div id="inspector-output" class="space-y-4 pt-2"></div>
         </div>
       </div>
 
@@ -1074,6 +1097,9 @@
     let isSignUpMode = false;
     let onlyMyQuestionsFilter = false;
 
+    let p5InspectorQ1Id = 1;
+    let p5InspectorQ2Id = 3;
+
     window.insightConfig = {
       overlapRatio: 70,
       jaccardRatio: 30,
@@ -1163,9 +1189,10 @@
         if (typeof window.populateFilterOptions === 'function') window.populateFilterOptions();
         if (typeof window.applyFilters === 'function') window.applyFilters();
         if (typeof window.updateComboboxInputLabels === 'function') window.updateComboboxInputLabels();
+        if (typeof window.updateP5ComboboxInputLabels === 'function') window.updateP5ComboboxInputLabels();
         if (typeof window.renderClustersAndFrequency === 'function') window.renderClustersAndFrequency();
         if (typeof window.calculateSuggestedClusters === 'function') window.calculateSuggestedClusters();
-        if (typeof window.populateP5PairSelector === 'function') window.populateP5PairSelector();
+        if (typeof window.runFormulaInspector === 'function') window.runFormulaInspector();
       }
     };
 
@@ -1173,14 +1200,19 @@
       populateFilterOptions();
       applyFilters();
       renderInsightRulesList();
-      populateP5PairSelector();
       updateComboboxInputLabels();
+      updateP5ComboboxInputLabels();
+      runFormulaInspector();
 
-      // Close Combobox Results Dropdown on Outside Click
+      // Global Outside Click Handler for Comboboxes
       document.addEventListener('click', (e) => {
         if (!e.target.closest('#page-2 .relative')) {
           document.getElementById('combobox-q1-results')?.classList.add('hidden');
           document.getElementById('combobox-q2-results')?.classList.add('hidden');
+        }
+        if (!e.target.closest('#page-5 .relative')) {
+          document.getElementById('p5-combobox-q1-results')?.classList.add('hidden');
+          document.getElementById('p5-combobox-q2-results')?.classList.add('hidden');
         }
       });
     });
@@ -1251,7 +1283,7 @@
         calculateSuggestedClusters();
       } else if (tabId === 'p5') {
         document.getElementById('page-5').classList.remove('hidden');
-        populateP5PairSelector();
+        updateP5ComboboxInputLabels();
         runFormulaInspector();
       }
 
@@ -1513,9 +1545,10 @@
       populateFilterOptions();
       applyFilters();
       updateComboboxInputLabels();
+      updateP5ComboboxInputLabels();
       renderClustersAndFrequency();
       calculateSuggestedClusters();
-      populateP5PairSelector();
+      runFormulaInspector();
       closeEditModal();
       window.showNotification("Saved", "Question record successfully updated and synced.");
     }
@@ -1542,9 +1575,10 @@
       populateFilterOptions();
       applyFilters();
       updateComboboxInputLabels();
+      updateP5ComboboxInputLabels();
       renderClustersAndFrequency();
       calculateSuggestedClusters();
-      populateP5PairSelector();
+      runFormulaInspector();
       closeDeleteModal();
       window.showNotification("Deleted", "Question record removed and cloud updated.");
     }
@@ -1633,7 +1667,76 @@
       }
     }
 
- function calculateSimilarity(text1, text2) {
+    // PAGE 5: LIVE SEARCH COMBOBOX HANDLERS FOR INSPECTOR WORKBENCH
+    function updateP5ComboboxInputLabels() {
+      const q1 = window.currentData.find(d => d.id === p5InspectorQ1Id);
+      const q2 = window.currentData.find(d => d.id === p5InspectorQ2Id);
+
+      const input1 = document.getElementById('p5-combobox-q1-input');
+      const input2 = document.getElementById('p5-combobox-q2-input');
+
+      if (input1 && q1) input1.value = `[#${q1.id}] ${q1.askedBy}: ${q1.question}`;
+      if (input2 && q2) input2.value = `[#${q2.id}] ${q2.askedBy}: ${q2.question}`;
+    }
+
+    function showP5ComboboxList(targetKey) {
+      const query = document.getElementById(`p5-combobox-${targetKey}-input`).value.toLowerCase().trim();
+      renderP5ComboboxResults(targetKey, query);
+      document.getElementById(`p5-combobox-${targetKey}-results`).classList.remove('hidden');
+    }
+
+    function onP5ComboboxInput(targetKey) {
+      const query = document.getElementById(`p5-combobox-${targetKey}-input`).value.toLowerCase().trim();
+      renderP5ComboboxResults(targetKey, query);
+      document.getElementById(`p5-combobox-${targetKey}-results`).classList.remove('hidden');
+    }
+
+    function renderP5ComboboxResults(targetKey, query) {
+      const resultsContainer = document.getElementById(`p5-combobox-${targetKey}-results`);
+      if (!resultsContainer) return;
+
+      const filtered = window.currentData.filter(d => !query || 
+        d.question.toLowerCase().includes(query) || 
+        d.askedBy.toLowerCase().includes(query) || 
+        d.topic.toLowerCase().includes(query)
+      );
+
+      if (filtered.length === 0) {
+        resultsContainer.innerHTML = `<div class="p-3 text-slate-400 text-center">No matching cards found</div>`;
+        return;
+      }
+
+      resultsContainer.innerHTML = filtered.map(d => `
+        <div onclick="selectP5ComboboxItem('${targetKey}', ${d.id})" class="p-3 hover:bg-emerald-50/80 cursor-pointer transition flex items-start justify-between space-x-2">
+          <div class="space-y-0.5">
+            <span class="font-bold text-slate-900 block line-clamp-1">[#${d.id}] ${d.question}</span>
+            <span class="text-[10px] text-slate-500 block">Asked By: ${d.askedBy}</span>
+          </div>
+          <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700 shrink-0">${d.topic}</span>
+        </div>
+      `).join('');
+    }
+
+    function selectP5ComboboxItem(targetKey, id) {
+      if (targetKey === 'q1') p5InspectorQ1Id = id;
+      if (targetKey === 'q2') p5InspectorQ2Id = id;
+
+      updateP5ComboboxInputLabels();
+      document.getElementById(`p5-combobox-${targetKey}-results`).classList.add('hidden');
+      runFormulaInspector();
+    }
+
+    function clearP5Combobox(targetKey) {
+      const input = document.getElementById(`p5-combobox-${targetKey}-input`);
+      if (input) {
+        input.value = '';
+        input.focus();
+        renderP5ComboboxResults(targetKey, '');
+        document.getElementById(`p5-combobox-${targetKey}-results`).classList.remove('hidden');
+      }
+    }
+
+   function calculateSimilarity(text1, text2) {
   // 1. Removes common filler words (stop words)
   const stopWords = new Set(['what', 'does', 'flex', 'this', 'that', 'with', 'from', 'have', 'your', 'about', 'can', 'will', 'show', 'for', 'the', 'and', 'are']);
   
@@ -2008,29 +2111,12 @@
       window.showNotification("Rule Added", "New coaching tip added to Insights Engine.");
     }
 
-    function populateP5PairSelector() {
-      const select = document.getElementById('p5-pair-select');
-      if (!select || window.currentData.length < 2) return;
-
-      let options = '';
-      for (let i = 0; i < Math.min(window.currentData.length, 8); i++) {
-        for (let j = i + 1; j < Math.min(window.currentData.length, 8); j++) {
-          const q1 = window.currentData[i];
-          const q2 = window.currentData[j];
-          options += `<option value="${q1.id},${q2.id}">[#${q1.id} vs #${q2.id}] ${q1.askedBy.split(' ')[0]} vs ${q2.askedBy.split(' ')[0]}</option>`;
-        }
-      }
-      select.innerHTML = options;
-    }
-
     function runFormulaInspector() {
-      const select = document.getElementById('p5-pair-select');
       const container = document.getElementById('inspector-output');
-      if (!select || !container || !select.value) return;
+      if (!container) return;
 
-      const [id1, id2] = select.value.split(',').map(Number);
-      const itemA = window.currentData.find(d => d.id === id1) || window.currentData[0];
-      const itemB = window.currentData.find(d => d.id === id2) || window.currentData[1];
+      const itemA = window.currentData.find(d => d.id === p5InspectorQ1Id) || window.currentData[0];
+      const itemB = window.currentData.find(d => d.id === p5InspectorQ2Id) || window.currentData[1];
 
       if (!itemA || !itemB) return;
 
@@ -2351,9 +2437,10 @@
       populateFilterOptions();
       applyFilters();
       updateComboboxInputLabels();
+      updateP5ComboboxInputLabels();
       renderClustersAndFrequency();
       calculateSuggestedClusters();
-      populateP5PairSelector();
+      runFormulaInspector();
       closeImportModal();
 
       switchTab('p4');
@@ -2406,6 +2493,11 @@
     window.selectComboboxItem = selectComboboxItem;
     window.clearCombobox = clearCombobox;
     window.updateComboboxInputLabels = updateComboboxInputLabels;
+    window.showP5ComboboxList = showP5ComboboxList;
+    window.onP5ComboboxInput = onP5ComboboxInput;
+    window.selectP5ComboboxItem = selectP5ComboboxItem;
+    window.clearP5Combobox = clearP5Combobox;
+    window.updateP5ComboboxInputLabels = updateP5ComboboxInputLabels;
     window.renderClustersAndFrequency = renderClustersAndFrequency;
     window.calculateSuggestedClusters = calculateSuggestedClusters;
     window.updateInsightSettings = updateInsightSettings;
@@ -2413,7 +2505,6 @@
     window.toggleInsightRule = toggleInsightRule;
     window.removeInsightRule = removeInsightRule;
     window.addCustomInsightRule = addCustomInsightRule;
-    window.populateP5PairSelector = populateP5PairSelector;
     window.runFormulaInspector = runFormulaInspector;
   </script>
 </body>
