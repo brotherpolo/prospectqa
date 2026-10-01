@@ -15,6 +15,21 @@
       background-image: linear-gradient(to right, rgba(229, 231, 235, 0.4) 1px, transparent 1px),
                         linear-gradient(to bottom, rgba(229, 231, 235, 0.4) 1px, transparent 1px);
     }
+    /* Custom scrollbar for inventory window */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col bg-grid-pattern overflow-x-hidden">
@@ -181,7 +196,7 @@
 
     <div id="protected-app-views" class="hidden space-y-6">
 
-      <!-- PAGE 1: INVENTORY -->
+      <!-- PAGE 1: INVENTORY (UPDATED WITH FIT-SCREEN SCROLLABLE WINDOW) -->
       <div id="page-1" class="space-y-6">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-4">
@@ -283,24 +298,27 @@
           </button>
         </div>
 
-        <div id="card-view-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        <!-- Scrollable Questions Screen Fitting Window -->
+        <div class="max-h-[calc(100vh-320px)] overflow-y-auto pr-1.5 custom-scrollbar rounded-2xl">
+          <div id="card-view-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
 
-        <div id="table-view-container" class="hidden bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-200 text-left text-xs">
-              <thead class="bg-slate-50 font-semibold text-slate-600">
-                <tr>
-                  <th class="py-3 px-4 w-12 text-center">#</th>
-                  <th class="py-3 px-4 w-44">Asked By</th>
-                  <th class="py-3 px-4">Question</th>
-                  <th class="py-3 px-4">Answer</th>
-                  <th class="py-3 px-4 w-32">Answered By</th>
-                  <th class="py-3 px-4 w-32">Category</th>
-                  <th class="py-3 px-4 w-28 text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="inventory-table-body" class="divide-y divide-slate-100 text-slate-700"></tbody>
-            </table>
+          <div id="table-view-container" class="hidden bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-slate-200 text-left text-xs">
+                <thead class="bg-slate-50 font-semibold text-slate-600 sticky top-0 z-10 shadow-sm">
+                  <tr>
+                    <th class="py-3 px-4 w-12 text-center">#</th>
+                    <th class="py-3 px-4 w-44">Asked By</th>
+                    <th class="py-3 px-4">Question</th>
+                    <th class="py-3 px-4">Answer</th>
+                    <th class="py-3 px-4 w-32">Answered By</th>
+                    <th class="py-3 px-4 w-32">Category</th>
+                    <th class="py-3 px-4 w-28 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="inventory-table-body" class="divide-y divide-slate-100 text-slate-700"></tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -484,7 +502,7 @@
         </div>
       </div>
 
-      <!-- PAGE 4: SUGGESTED 3-WAY CLUSTERS (SCROLLABLE UNLIMITED LIST) -->
+      <!-- PAGE 4: SUGGESTED 3-WAY CLUSTERS -->
       <div id="page-4" class="hidden space-y-6">
         <div class="bg-gradient-to-r from-amber-950 via-slate-900 to-indigo-950 text-white p-6 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
@@ -580,7 +598,7 @@
         </div>
       </div>
 
-      <!-- PAGE 5: INSIGHTS ENGINE & RULE MANAGER WITH AUTO-CLEARING COMBOBOXES -->
+      <!-- PAGE 5: INSIGHTS ENGINE & RULE MANAGER -->
       <div id="page-5" class="hidden space-y-6">
         <div class="bg-gradient-to-r from-emerald-950 via-slate-900 to-indigo-950 text-white p-6 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
@@ -656,7 +674,7 @@
           </div>
         </div>
 
-        <!-- SEARCHABLE FORMULA INSPECTOR WORKBENCH WITH AUTO-CLEAR -->
+        <!-- SEARCHABLE FORMULA INSPECTOR WORKBENCH -->
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
           <div class="border-b border-slate-100 pb-3">
             <h3 class="text-sm font-bold text-slate-900">Live Formula Inspector Workbench</h3>
@@ -699,6 +717,7 @@
 
   </main>
 
+  <!-- MODALS -->
   <div id="question-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-xl w-full p-6 space-y-4 shadow-2xl border border-slate-200">
       <div class="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -939,6 +958,7 @@
     </div>
   </div>
 
+  <!-- FIREBASE & APP LOGIC -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { 
@@ -1052,7 +1072,7 @@
         await setDoc(dataDocRef, {
           items: items,
           categories: categories,
-          insightConfig: window.insightConfig, // PERISTS COACHING RULES & WEIGHTS TO FIRESTORE
+          insightConfig: window.insightConfig,
           lastUpdated: new Date().toISOString(),
           updatedBy: currentUser.email || currentUser.uid
         });
@@ -1092,6 +1112,7 @@
     }
   </script>
 
+  <!-- MAIN APPLICATION JAVASCRIPT LOGIC -->
   <script>
     let isSignUpMode = false;
     let onlyMyQuestionsFilter = false;
@@ -1740,28 +1761,23 @@
       }
     }
 
-     function calculateSimilarity(text1, text2) {
-  // 1. Removes common filler words (stop words)
-  const stopWords = new Set(['what', 'does', 'flex', 'this', 'that', 'with', 'from', 'have', 'your', 'about', 'can', 'will', 'show', 'for', 'the', 'and', 'are']);
-  
-  // 2. Tokenizes text: converts to lowercase, strips punctuation, and breaks into individual words
-  const tokenize = str => str.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 2 && !stopWords.has(w));
-  
-  const words1 = tokenize(text1);
-  const words2 = tokenize(text2);
+    function calculateSimilarity(text1, text2) {
+      const stopWords = new Set(['what', 'does', 'flex', 'this', 'that', 'with', 'from', 'have', 'your', 'about', 'can', 'will', 'show', 'for', 'the', 'and', 'are']);
+      
+      const tokenize = str => str.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 2 && !stopWords.has(w));
+      
+      const words1 = tokenize(text1);
+      const words2 = tokenize(text2);
 
-  // 3. Converts word arrays into unique Sets (ignoring word order and sentence structure)
-  const set1 = new Set(words1);
-  const set2 = new Set(words2);
+      const set1 = new Set(words1);
+      const set2 = new Set(words2);
 
-  // 4. Calculates Jaccard Index: (Common Unique Words) / (Total Combined Unique Words)
-  const intersection = new Set([...set1].filter(x => set2.has(x)));
-  const union = new Set([...set1, ...set2]);
+      const intersection = new Set([...set1].filter(x => set2.has(x)));
+      const union = new Set([...set1, ...set2]);
 
-  if (union.size === 0) return 0;
-  return Math.round((intersection.size / union.size) * 100);
-}
-
+      if (union.size === 0) return 0;
+      return Math.round((intersection.size / union.size) * 100);
+    }
 
     function updateComparisonView() {
       const itemA = window.currentData.find(d => d.id === selectedQ1Id) || window.currentData[0];
@@ -1798,7 +1814,6 @@
       generateCoachingTakeaways(itemA, itemB, simScore);
     }
 
-    // STRICT CONDITIONAL RULE EVALUATOR FOR COACHING TAKEAWAYS
     function generateCoachingTakeaways(itemA, itemB, simScore) {
       const container = document.getElementById('coaching-takeaways');
       const sameRep = itemA.answeredBy.trim().toLowerCase() === itemB.answeredBy.trim().toLowerCase();
@@ -1815,35 +1830,30 @@
           let note = "";
           const lowerText = r.text.toLowerCase();
 
-          // Condition 1: Brevity Warning (Only triggers if an answer is below threshold)
           if (r.id === 1 || lowerText.includes("brevity") || lowerText.includes("word threshold")) {
             if (wordsA < threshold || wordsB < threshold) {
               triggered = true;
               note = ` (${wordsA} vs ${wordsB} words — threshold: ${threshold})`;
             }
           } 
-          // Condition 2: Multi-Rep Warning (Only triggers if reps are DIFFERENT)
           else if (r.id === 2 || lowerText.includes("multi-rep") || lowerText.includes("different representative")) {
             if (!sameRep) {
               triggered = true;
               note = ` (${itemA.answeredBy} vs ${itemB.answeredBy})`;
             }
           }
-          // Condition 3: Same Rep Warning (Only triggers if reps are the SAME)
           else if (lowerText.includes("same representative") || lowerText.includes("same rep")) {
             if (sameRep) {
               triggered = true;
               note = ` (Handled by ${itemA.answeredBy})`;
             }
           }
-          // Condition 4: Cross-Category Warning (Only triggers if topics differ)
           else if (r.id === 3 || lowerText.includes("cross-topic") || lowerText.includes("cross-category")) {
             if (!sameTopic) {
               triggered = true;
               note = ` (${itemA.topic} vs ${itemB.topic})`;
             }
           }
-          // Default Custom User Guidance Tips (>10 characters)
           else {
             if (r.text.trim().length > 10) {
               triggered = true;
