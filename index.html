@@ -305,13 +305,13 @@
         </div>
       </div>
 
-      <!-- PAGE 2: SEARCHABLE COMPARE ENGINE -->
+      <!-- PAGE 2: LIVE SEARCH COMBOBOX COMPARE ENGINE -->
       <div id="page-2" class="hidden space-y-6">
         <div class="bg-gradient-to-r from-indigo-900 via-slate-900 to-indigo-950 rounded-2xl p-6 text-white shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <span class="bg-indigo-500/30 text-indigo-200 border border-indigo-400/30 px-2.5 py-0.5 rounded-full text-xs font-semibold">Training & Consistency Analysis</span>
             <h2 class="text-xl font-bold mt-1">Side-by-Side Question & Answer Comparison</h2>
-            <p class="text-xs text-slate-300 mt-0.5">Filter with real-time keyword search to compare answer consistency, depth, and tone across representatives.</p>
+            <p class="text-xs text-slate-300 mt-0.5">Type directly into Question A or B search boxes to filter and select questions for comparison.</p>
           </div>
           <button onclick="autoPickSimilarPair()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-xl shadow transition flex items-center space-x-2">
             <i class="fa-solid fa-wand-magic-sparkles"></i>
@@ -320,45 +320,56 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div class="bg-white p-5 rounded-2xl border border-indigo-200 shadow-sm space-y-3">
+          <!-- Question A Live Combobox Search -->
+          <div class="bg-white p-5 rounded-2xl border border-indigo-200 shadow-sm space-y-3 relative">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 flex items-center space-x-1.5">
                 <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs">A</span>
-                <span>Question A Selector</span>
+                <span>Select Question A</span>
               </span>
-              <span id="cmp-badge-a" class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-medium">Select Question</span>
+              <span id="cmp-badge-a" class="text-xs bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full font-bold border border-indigo-100">Selected</span>
             </div>
             
             <div class="relative">
-              <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
-              <input type="text" id="search-q1" oninput="populateComparisonDropdowns()" placeholder="Type to filter Question A list..." 
-                class="w-full pl-9 pr-3 py-2 bg-indigo-50/50 border border-indigo-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none transition">
-            </div>
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+              <input type="text" id="combobox-q1-input" onfocus="showComboboxList('q1')" oninput="onComboboxInput('q1')" placeholder="Type keywords to search Question A..." 
+                class="w-full pl-9 pr-8 py-2.5 bg-indigo-50/40 border border-indigo-200 rounded-xl text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none transition">
+              <button onclick="clearCombobox('q1')" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 text-xs">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
 
-            <select id="select-q1" onchange="updateComparisonView()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-800 font-medium focus:ring-2 focus:ring-indigo-500">
-            </select>
+              <!-- Floating Live Results Dropdown -->
+              <div id="combobox-q1-results" class="hidden absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-xl z-30 max-h-60 overflow-y-auto divide-y divide-slate-100 text-xs">
+              </div>
+            </div>
           </div>
 
-          <div class="bg-white p-5 rounded-2xl border border-purple-200 shadow-sm space-y-3">
+          <!-- Question B Live Combobox Search -->
+          <div class="bg-white p-5 rounded-2xl border border-purple-200 shadow-sm space-y-3 relative">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold uppercase tracking-wider text-purple-600 flex items-center space-x-1.5">
                 <span class="w-5 h-5 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-xs">B</span>
-                <span>Question B Selector</span>
+                <span>Select Question B</span>
               </span>
-              <span id="cmp-badge-b" class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-medium">Select Question</span>
+              <span id="cmp-badge-b" class="text-xs bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full font-bold border border-purple-100">Selected</span>
             </div>
 
             <div class="relative">
-              <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
-              <input type="text" id="search-q2" oninput="populateComparisonDropdowns()" placeholder="Type to filter Question B list..." 
-                class="w-full pl-9 pr-3 py-2 bg-purple-50/50 border border-purple-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-purple-500 focus:bg-white focus:outline-none transition">
-            </div>
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+              <input type="text" id="combobox-q2-input" onfocus="showComboboxList('q2')" oninput="onComboboxInput('q2')" placeholder="Type keywords to search Question B..." 
+                class="w-full pl-9 pr-8 py-2.5 bg-purple-50/40 border border-purple-200 rounded-xl text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-purple-500 focus:bg-white focus:outline-none transition">
+              <button onclick="clearCombobox('q2')" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 text-xs">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
 
-            <select id="select-q2" onchange="updateComparisonView()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-800 font-medium focus:ring-2 focus:ring-purple-500">
-            </select>
+              <!-- Floating Live Results Dropdown -->
+              <div id="combobox-q2-results" class="hidden absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-xl z-30 max-h-60 overflow-y-auto divide-y divide-slate-100 text-xs">
+              </div>
+            </div>
           </div>
         </div>
 
+        <!-- Comparison Display Card -->
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
           <div class="bg-slate-900 text-white px-6 py-4 flex flex-col sm:flex-row items-center justify-between border-b border-slate-800 gap-3">
             <div class="flex items-center space-x-3">
@@ -591,7 +602,6 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Parameter Sliders -->
           <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4 lg:col-span-1">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center space-x-1.5 border-b border-slate-100 pb-2">
               <i class="fa-solid fa-sliders text-indigo-600"></i>
@@ -628,7 +638,6 @@
             </div>
           </div>
 
-          <!-- Custom Rule Manager -->
           <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4 lg:col-span-2 flex flex-col justify-between">
             <div class="space-y-3">
               <div class="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -651,7 +660,6 @@
           </div>
         </div>
 
-        <!-- Live Formula Inspector Workbench -->
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
           <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-100 pb-3 gap-2">
             <div>
@@ -1154,7 +1162,7 @@
         }
         if (typeof window.populateFilterOptions === 'function') window.populateFilterOptions();
         if (typeof window.applyFilters === 'function') window.applyFilters();
-        if (typeof window.populateComparisonDropdowns === 'function') window.populateComparisonDropdowns();
+        if (typeof window.updateComboboxInputLabels === 'function') window.updateComboboxInputLabels();
         if (typeof window.renderClustersAndFrequency === 'function') window.renderClustersAndFrequency();
         if (typeof window.calculateSuggestedClusters === 'function') window.calculateSuggestedClusters();
         if (typeof window.populateP5PairSelector === 'function') window.populateP5PairSelector();
@@ -1166,6 +1174,15 @@
       applyFilters();
       renderInsightRulesList();
       populateP5PairSelector();
+      updateComboboxInputLabels();
+
+      // Close Combobox Results Dropdown on Outside Click
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('#page-2 .relative')) {
+          document.getElementById('combobox-q1-results')?.classList.add('hidden');
+          document.getElementById('combobox-q2-results')?.classList.add('hidden');
+        }
+      });
     });
 
     function toggleMobileMenu(show) {
@@ -1224,6 +1241,8 @@
         document.getElementById('page-1').classList.remove('hidden');
       } else if (tabId === 'p2') {
         document.getElementById('page-2').classList.remove('hidden');
+        updateComboboxInputLabels();
+        updateComparisonView();
       } else if (tabId === 'p3') {
         document.getElementById('page-3').classList.remove('hidden');
         renderClustersAndFrequency();
@@ -1493,7 +1512,7 @@
 
       populateFilterOptions();
       applyFilters();
-      populateComparisonDropdowns();
+      updateComboboxInputLabels();
       renderClustersAndFrequency();
       calculateSuggestedClusters();
       populateP5PairSelector();
@@ -1522,7 +1541,7 @@
 
       populateFilterOptions();
       applyFilters();
-      populateComparisonDropdowns();
+      updateComboboxInputLabels();
       renderClustersAndFrequency();
       calculateSuggestedClusters();
       populateP5PairSelector();
@@ -1540,35 +1559,81 @@
         selectedQ2Id = match ? match.id : (id1 === 1 ? 2 : 1);
       }
       
-      populateComparisonDropdowns();
       switchTab('p2');
+      updateComboboxInputLabels();
       updateComparisonView();
     }
 
-    function populateComparisonDropdowns() {
-      const select1 = document.getElementById('select-q1');
-      const select2 = document.getElementById('select-q2');
+    // PAGE 2: LIVE SEARCH COMBOBOX HANDLERS
+    function updateComboboxInputLabels() {
+      const q1 = window.currentData.find(d => d.id === selectedQ1Id);
+      const q2 = window.currentData.find(d => d.id === selectedQ2Id);
 
-      const filter1 = (document.getElementById('search-q1')?.value || '').toLowerCase().trim();
-      const filter2 = (document.getElementById('search-q2')?.value || '').toLowerCase().trim();
+      const input1 = document.getElementById('combobox-q1-input');
+      const input2 = document.getElementById('combobox-q2-input');
 
-      const items1 = window.currentData.filter(d => !filter1 || 
-        d.question.toLowerCase().includes(filter1) || 
-        d.askedBy.toLowerCase().includes(filter1) ||
-        d.topic.toLowerCase().includes(filter1)
-      );
-
-      const items2 = window.currentData.filter(d => !filter2 || 
-        d.question.toLowerCase().includes(filter2) || 
-        d.askedBy.toLowerCase().includes(filter2) ||
-        d.topic.toLowerCase().includes(filter2)
-      );
-
-      select1.innerHTML = items1.map(d => `<option value="${d.id}" ${d.id === selectedQ1Id ? 'selected' : ''}>[#${d.id}] ${d.askedBy}: ${d.question.substring(0, 60)}...</option>`).join('');
-      select2.innerHTML = items2.map(d => `<option value="${d.id}" ${d.id === selectedQ2Id ? 'selected' : ''}>[#${d.id}] ${d.askedBy}: ${d.question.substring(0, 60)}...</option>`).join('');
+      if (input1 && q1) input1.value = `[#${q1.id}] ${q1.askedBy}: ${q1.question}`;
+      if (input2 && q2) input2.value = `[#${q2.id}] ${q2.askedBy}: ${q2.question}`;
     }
 
-  function calculateSimilarity(text1, text2) {
+    function showComboboxList(targetKey) {
+      const query = document.getElementById(`combobox-${targetKey}-input`).value.toLowerCase().trim();
+      renderComboboxResults(targetKey, query);
+      document.getElementById(`combobox-${targetKey}-results`).classList.remove('hidden');
+    }
+
+    function onComboboxInput(targetKey) {
+      const query = document.getElementById(`combobox-${targetKey}-input`).value.toLowerCase().trim();
+      renderComboboxResults(targetKey, query);
+      document.getElementById(`combobox-${targetKey}-results`).classList.remove('hidden');
+    }
+
+    function renderComboboxResults(targetKey, query) {
+      const resultsContainer = document.getElementById(`combobox-${targetKey}-results`);
+      if (!resultsContainer) return;
+
+      const filtered = window.currentData.filter(d => !query || 
+        d.question.toLowerCase().includes(query) || 
+        d.askedBy.toLowerCase().includes(query) || 
+        d.topic.toLowerCase().includes(query)
+      );
+
+      if (filtered.length === 0) {
+        resultsContainer.innerHTML = `<div class="p-3 text-slate-400 text-center">No questions matching "${query}"</div>`;
+        return;
+      }
+
+      resultsContainer.innerHTML = filtered.map(d => `
+        <div onclick="selectComboboxItem('${targetKey}', ${d.id})" class="p-3 hover:bg-indigo-50/80 cursor-pointer transition flex items-start justify-between space-x-2">
+          <div class="space-y-0.5">
+            <span class="font-bold text-slate-900 block line-clamp-1">[#${d.id}] ${d.question}</span>
+            <span class="text-[10px] text-slate-500 block">Asked By: ${d.askedBy}</span>
+          </div>
+          <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700 shrink-0">${d.topic}</span>
+        </div>
+      `).join('');
+    }
+
+    function selectComboboxItem(targetKey, id) {
+      if (targetKey === 'q1') selectedQ1Id = id;
+      if (targetKey === 'q2') selectedQ2Id = id;
+
+      updateComboboxInputLabels();
+      document.getElementById(`combobox-${targetKey}-results`).classList.add('hidden');
+      updateComparisonView();
+    }
+
+    function clearCombobox(targetKey) {
+      const input = document.getElementById(`combobox-${targetKey}-input`);
+      if (input) {
+        input.value = '';
+        input.focus();
+        renderComboboxResults(targetKey, '');
+        document.getElementById(`combobox-${targetKey}-results`).classList.remove('hidden');
+      }
+    }
+
+ function calculateSimilarity(text1, text2) {
   // 1. Removes common filler words (stop words)
   const stopWords = new Set(['what', 'does', 'flex', 'this', 'that', 'with', 'from', 'have', 'your', 'about', 'can', 'will', 'show', 'for', 'the', 'and', 'are']);
   
@@ -1590,11 +1655,7 @@
   return Math.round((intersection.size / union.size) * 100);
 }
 
-
     function updateComparisonView() {
-      selectedQ1Id = parseInt(document.getElementById('select-q1').value);
-      selectedQ2Id = parseInt(document.getElementById('select-q2').value);
-
       const itemA = window.currentData.find(d => d.id === selectedQ1Id) || window.currentData[0];
       const itemB = window.currentData.find(d => d.id === selectedQ2Id) || window.currentData[1];
 
@@ -1680,7 +1741,7 @@
 
       selectedQ1Id = bestPair[0];
       selectedQ2Id = bestPair[1];
-      populateComparisonDropdowns();
+      updateComboboxInputLabels();
       updateComparisonView();
     }
 
@@ -1894,7 +1955,7 @@
       window.insightConfig.shortWordThreshold = thresholdVal;
 
       runFormulaInspector();
-      if (document.getElementById('select-q1')?.value) updateComparisonView();
+      if (selectedQ1Id && selectedQ2Id) updateComparisonView();
     }
 
     function resetInsightEngineDefaults() {
@@ -1926,13 +1987,13 @@
       const rule = window.insightConfig.customRules.find(r => r.id === id);
       if (rule) rule.enabled = !rule.enabled;
       renderInsightRulesList();
-      if (document.getElementById('select-q1')?.value) updateComparisonView();
+      if (selectedQ1Id && selectedQ2Id) updateComparisonView();
     }
 
     function removeInsightRule(id) {
       window.insightConfig.customRules = window.insightConfig.customRules.filter(r => r.id !== id);
       renderInsightRulesList();
-      if (document.getElementById('select-q1')?.value) updateComparisonView();
+      if (selectedQ1Id && selectedQ2Id) updateComparisonView();
     }
 
     function addCustomInsightRule() {
@@ -1989,7 +2050,6 @@
       const finalSim = calculateSimilarity(itemA.question, itemB.question);
 
       container.innerHTML = `
-        <!-- Tier 1: Question & Answer Text Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div class="bg-indigo-50/40 p-4 rounded-xl border border-indigo-100 space-y-2">
             <div class="flex items-center justify-between">
@@ -2020,7 +2080,6 @@
           </div>
         </div>
 
-        <!-- Tier 2: Mathematical Breakdown Panels -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
           <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
             <span class="font-bold text-slate-800 block">1. Tokenization & Overlap</span>
@@ -2264,7 +2323,7 @@
           showImportError(`<strong>Parsing Error:</strong> Unable to read file. Please ensure it is a valid Excel or CSV file. (${err.message})`);
         }
       };
-      reader.readAsArrayBuffer(file);
+      reader.readAsBuffer ? reader.readAsArrayBuffer(file) : reader.readAsArrayBuffer(file);
     }
 
     function commitImport() {
@@ -2291,7 +2350,7 @@
 
       populateFilterOptions();
       applyFilters();
-      populateComparisonDropdowns();
+      updateComboboxInputLabels();
       renderClustersAndFrequency();
       calculateSuggestedClusters();
       populateP5PairSelector();
@@ -2342,7 +2401,11 @@
     window.saveCategoryRename = saveCategoryRename;
     window.addNewCategory = addNewCategory;
     window.populateFilterOptions = populateFilterOptions;
-    window.populateComparisonDropdowns = populateComparisonDropdowns;
+    window.showComboboxList = showComboboxList;
+    window.onComboboxInput = onComboboxInput;
+    window.selectComboboxItem = selectComboboxItem;
+    window.clearCombobox = clearCombobox;
+    window.updateComboboxInputLabels = updateComboboxInputLabels;
     window.renderClustersAndFrequency = renderClustersAndFrequency;
     window.calculateSuggestedClusters = calculateSuggestedClusters;
     window.updateInsightSettings = updateInsightSettings;
