@@ -1790,59 +1790,77 @@
     }
 
     // DYNAMIC RULE EVALUATOR FOR COACHING TAKEAWAYS
-    function generateCoachingTakeaways(itemA, itemB, simScore) {
-      const container = document.getElementById('coaching-takeaways');
-      const sameRep = itemA.answeredBy === itemB.answeredBy;
-      const sameTopic = itemA.topic === itemB.topic;
+   function generateCoachingTakeaways(itemA, itemB, simScore) {
+  const container = document.getElementById('coaching-takeaways');
+  const sameRep = itemA.answeredBy === itemB.answeredBy;
+  const sameTopic = itemA.topic === itemB.topic;
 
-      const wordsA = itemA.answer.split(' ').length;
-      const wordsB = itemB.answer.split(' ').length;
-      const threshold = window.insightConfig.shortWordThreshold || 15;
+  const wordsA = itemA.answer.split(' ').length;
+  const wordsB = itemB.answer.split(' ').length;
+  const threshold = window.insightConfig.shortWordThreshold || 15;
 
-      // Evaluates ALL enabled rules dynamically
-      let activeRulesHTML = "";
-      if (window.insightConfig.customRules) {
-        const activeRules = window.insightConfig.customRules.filter(r => r.enabled);
-        if (activeRules.length > 0) {
-          activeRulesHTML = activeRules.map(r => {
-            let detailNote = "";
-            if (r.id === 1 && (wordsA < threshold || wordsB < threshold)) {
-              detailNote = ` (Answer length: ${wordsA} vs ${wordsB} words)`;
-            }
-            return `<li class="flex items-start space-x-1.5 text-emerald-800 font-medium mt-1 bg-emerald-50/80 p-1.5 rounded-lg border border-emerald-100">
-              <i class="fa-solid fa-circle-check text-emerald-600 text-xs mt-0.5 shrink-0"></i>
-              <span>${r.text}${detailNote}</span>
-            </li>`;
-          }).join('');
-        }
+  // Dynamically evaluate active rules conditionally
+  let triggeredRulesHTML = "";
+  if (window.insightConfig.customRules) {
+    window.insightConfig.customRules.filter(r => r.enabled).forEach(r => {
+      let triggered = false;
+      let note = "";
+
+      // Condition 1: Brevity Rule (Only triggers if an answer is below threshold)
+      if (r.id === 1 && (wordsA < threshold || wordsB < threshold)) {
+        triggered = true;
+        note = ` (Answer length: ${wordsA} vs ${wordsB} words — threshold: ${threshold})`;
+      } 
+      // Condition 2: Multi-Rep Coverage (Only triggers if different reps handled them)
+      else if (r.id === 2 && !sameRep) {
+        triggered = true;
+        note = ` (${itemA.answeredBy} vs ${itemB.answeredBy})`;
+      }
+      // Condition 3: Cross-Category Flag (Only triggers if topics differ)
+      else if (r.id === 3 && !sameTopic) {
+        triggered = true;
+        note = ` (${itemA.topic} vs ${itemB.topic})`;
+      }
+      // Custom User Tips: Trigger on keyword or always active if generic tip
+      else if (r.id > 3) {
+        triggered = true;
       }
 
-      container.innerHTML = `
-        <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-1">
-          <strong class="text-slate-800 block font-semibold flex items-center space-x-1.5">
-            <i class="fa-solid fa-user-check text-indigo-600"></i>
-            <span>Representative Consistency</span>
-          </strong>
-          <p class="text-slate-600">${sameRep ? `Handled by <strong>${itemA.answeredBy}</strong>. Evaluate answer consistency.` : `Handled by different reps: <strong>${itemA.answeredBy}</strong> vs <strong>${itemB.answeredBy}</strong>.`}</p>
-        </div>
-        <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-1">
-          <strong class="text-slate-800 block font-semibold flex items-center space-x-1.5">
-            <i class="fa-solid fa-tag text-purple-600"></i>
-            <span>Topic Alignment</span>
-          </strong>
-          <p class="text-slate-600">${sameTopic ? `Both fall under <strong>${itemA.topic}</strong>.` : `Cross-category comparison (${itemA.topic} vs ${itemB.topic}).`}</p>
-        </div>
-        <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-1.5">
-          <strong class="text-slate-800 block font-semibold flex items-center space-x-1.5">
-            <i class="fa-solid fa-list-check text-emerald-600"></i>
-            <span>Active Coaching Tips</span>
-          </strong>
-          <ul class="text-[11px] space-y-1">
-            ${activeRulesHTML || '<li class="text-slate-400 font-normal">No custom rules active. Toggle or add rules on Page 5.</li>'}
-          </ul>
-        </div>
-      `;
-    }
+      if (triggered) {
+        triggeredRulesHTML += `<li class="flex items-start space-x-1.5 text-amber-800 font-medium mt-1 bg-amber-50/80 p-1.5 rounded-lg border border-amber-200/60">
+          <i class="fa-solid fa-triangle-exclamation text-amber-600 text-xs mt-0.5 shrink-0"></i>
+          <span>${r.text}${note}</span>
+        </li>`;
+      }
+    });
+  }
+
+  container.innerHTML = `
+    <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-1">
+      <strong class="text-slate-800 block font-semibold flex items-center space-x-1.5">
+        <i class="fa-solid fa-user-check text-indigo-600"></i>
+        <span>Representative Consistency</span>
+      </strong>
+      <p class="text-slate-600">${sameRep ? `Handled consistently by <strong>${itemA.answeredBy}</strong>.` : `Handled by different reps: <strong>${itemA.answeredBy}</strong> vs <strong>${itemB.answeredBy}</strong>.`}</p>
+    </div>
+    <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-1">
+      <strong class="text-slate-800 block font-semibold flex items-center space-x-1.5">
+        <i class="fa-solid fa-tag text-purple-600"></i>
+        <span>Topic Alignment</span>
+      </strong>
+      <p class="text-slate-600">${sameTopic ? `Both fall under <strong>${itemA.topic}</strong>.` : `Cross-category comparison (${itemA.topic} vs${itemB.topic}).`}</p>
+    </div>
+    <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-1.5">
+      <strong class="text-slate-800 block font-semibold flex items-center space-x-1.5">
+        <i class="fa-solid fa-flag text-amber-600"></i>
+        <span>Triggered Coaching Flags</span>
+      </strong>
+      <ul class="text-[11px] space-y-1">
+        ${triggeredRulesHTML || '<li class="text-emerald-700 font-medium flex items-center space-x-1"><i class="fa-solid fa-circle-check text-emerald-500 mr-1"></i>No coaching warnings triggered for this pair.</li>'}
+      </ul>
+    </div>
+  `;
+}
 
     function autoPickSimilarPair() {
       let maxSim = -1;
