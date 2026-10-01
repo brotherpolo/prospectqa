@@ -1053,7 +1053,7 @@
         await setDoc(dataDocRef, {
           items: items,
           categories: categories,
-          insightConfig: window.insightConfig, // SAVES RULES & WEIGHTS TO FIRESTORE
+          insightConfig: window.insightConfig, // PERISTS COACHING RULES & WEIGHTS TO FIRESTORE
           lastUpdated: new Date().toISOString(),
           updatedBy: currentUser.email || currentUser.uid
         });
@@ -1741,7 +1741,7 @@
       }
     }
 
-      function calculateSimilarity(text1, text2) {
+   function calculateSimilarity(text1, text2) {
   // 1. Removes common filler words (stop words)
   const stopWords = new Set(['what', 'does', 'flex', 'this', 'that', 'with', 'from', 'have', 'your', 'about', 'can', 'will', 'show', 'for', 'the', 'and', 'are']);
   
@@ -1798,11 +1798,11 @@
       generateCoachingTakeaways(itemA, itemB, simScore);
     }
 
-    // DYNAMIC CONDITIONAL RULE EVALUATOR FOR COACHING TAKEAWAYS
+    // STRICT CONDITIONAL RULE EVALUATOR FOR COACHING TAKEAWAYS
     function generateCoachingTakeaways(itemA, itemB, simScore) {
       const container = document.getElementById('coaching-takeaways');
-      const sameRep = itemA.answeredBy === itemB.answeredBy;
-      const sameTopic = itemA.topic === itemB.topic;
+      const sameRep = itemA.answeredBy.trim().toLowerCase() === itemB.answeredBy.trim().toLowerCase();
+      const sameTopic = itemA.topic.trim().toLowerCase() === itemB.topic.trim().toLowerCase();
 
       const wordsA = itemA.answer.split(' ').length;
       const wordsB = itemB.answer.split(' ').length;
@@ -1813,24 +1813,38 @@
         window.insightConfig.customRules.filter(r => r.enabled).forEach(r => {
           let triggered = false;
           let note = "";
+          const lowerText = r.text.toLowerCase();
 
-          // Condition 1: Brevity Warning
-          if (r.id === 1 && (wordsA < threshold || wordsB < threshold)) {
-            triggered = true;
-            note = ` (${wordsA} vs ${wordsB} words — threshold: ${threshold})`;
+          // Condition 1: Brevity Warning (Only triggers if an answer is below threshold)
+          if (r.id === 1 || lowerText.includes("brevity") || lowerText.includes("word threshold")) {
+            if (wordsA < threshold || wordsB < threshold) {
+              triggered = true;
+              note = ` (${wordsA} vs ${wordsB} words — threshold: ${threshold})`;
+            }
           } 
-          // Condition 2: Multi-Rep Coverage Warning
-          else if (r.id === 2 && !sameRep) {
-            triggered = true;
-            note = ` (${itemA.answeredBy} vs ${itemB.answeredBy})`;
+          // Condition 2: Multi-Rep Warning (Only triggers if reps are DIFFERENT)
+          else if (r.id === 2 || lowerText.includes("multi-rep") || lowerText.includes("different representative")) {
+            if (!sameRep) {
+              triggered = true;
+              note = ` (${itemA.answeredBy} vs ${itemB.answeredBy})`;
+            }
           }
-          // Condition 3: Cross-Category Warning
-          else if (r.id === 3 && !sameTopic) {
-            triggered = true;
-            note = ` (${itemA.topic} vs ${itemB.topic})`;
+          // Condition 3: Same Rep Warning (Only triggers if reps are the SAME)
+          else if (lowerText.includes("same representative") || lowerText.includes("same rep")) {
+            if (sameRep) {
+              triggered = true;
+              note = ` (Handled by ${itemA.answeredBy})`;
+            }
           }
-          // Custom User Tips
-          else if (r.id > 3) {
+          // Condition 4: Cross-Category Warning (Only triggers if topics differ)
+          else if (r.id === 3 || lowerText.includes("cross-topic") || lowerText.includes("cross-category")) {
+            if (!sameTopic) {
+              triggered = true;
+              note = ` (${itemA.topic} vs ${itemB.topic})`;
+            }
+          }
+          // Default Custom User Tips (Trigger on general keywords or active tip)
+          else {
             triggered = true;
           }
 
