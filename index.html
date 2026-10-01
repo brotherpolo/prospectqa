@@ -249,8 +249,8 @@
                 <span>My Entries</span>
               </button>
               <div class="bg-slate-100 p-1 rounded-xl flex border border-slate-200">
-                <button id="btn-view-card" onclick="setViewMode('card')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-800 shadow-sm"><i class="fa-solid fa-border-all mr-1"></i> Cards</button>
-                <button id="btn-view-table" onclick="setViewMode('table')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900"><i class="fa-solid fa-list mr-1"></i> Table</button>
+                <button id="btn-view-card" onclick="setViewMode('card')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900"><i class="fa-solid fa-border-all mr-1"></i> Cards</button>
+                <button id="btn-view-table" onclick="setViewMode('table')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-800 shadow-sm"><i class="fa-solid fa-list mr-1"></i> Table</button>
               </div>
               <button onclick="exportFilteredCSV()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl border border-slate-300 transition flex items-center space-x-1.5">
                 <i class="fa-solid fa-download"></i>
@@ -300,9 +300,9 @@
 
         <!-- Scrollable Questions Screen Fitting Window -->
         <div class="max-h-[calc(100vh-320px)] overflow-y-auto pr-1.5 custom-scrollbar rounded-2xl">
-          <div id="card-view-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+          <div id="card-view-container" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4"></div>
 
-          <div id="table-view-container" class="hidden bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div id="table-view-container" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <div class="overflow-x-auto">
               <table class="min-w-full divide-y divide-slate-200 text-left text-xs">
                 <thead class="bg-slate-50 font-semibold text-slate-600 sticky top-0 z-10 shadow-sm">
@@ -1131,6 +1131,7 @@
       ]
     };
 
+    // ... existing SEED_DATA ...
     window.SEED_DATA = [
       {"id": 1, "askedBy": "Mark (North Shore Metal)", "question": "Is anything available in the mobile app that cannot be accessed on desktop?", "answer": "Generally, desktop has more capabilities. One mobile-specific feature is voice-to-text for free-text fields. The desktop view can also be accessed through the mobile app.", "answeredBy": "Caroline and Casey", "topic": "Mobile & User Experience", "createdBy": "caroline@company.com"},
       {"id": 2, "askedBy": "Mark (North Shore Metal)", "question": "Can information be added after an incident has been investigated, addressed, and closed?", "answer": "Yes. Form responses can still be edited after the workflow closes, and the system retains a version history of the changes.", "answeredBy": "Caroline", "topic": "Forms & Configurable Workflows", "createdBy": "caroline@company.com"},
@@ -1193,7 +1194,7 @@
     window.currentData = [...window.SEED_DATA];
     window.filteredData = [...window.SEED_DATA];
     window.customCategories = new Set(window.SEED_DATA.map(d => d.topic));
-    let viewMode = 'card';
+    let viewMode = 'table';
     let selectedQ1Id = 1;
     let selectedQ2Id = 3;
     let stagingRecords = [];
