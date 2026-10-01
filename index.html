@@ -305,13 +305,13 @@
         </div>
       </div>
 
-      <!-- PAGE 2: LIVE SEARCH COMBOBOX COMPARE ENGINE -->
+      <!-- PAGE 2: LIVE SEARCH COMBOBOX COMPARE ENGINE (WITH AUTO-CLEAR) -->
       <div id="page-2" class="hidden space-y-6">
         <div class="bg-gradient-to-r from-indigo-900 via-slate-900 to-indigo-950 rounded-2xl p-6 text-white shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <span class="bg-indigo-500/30 text-indigo-200 border border-indigo-400/30 px-2.5 py-0.5 rounded-full text-xs font-semibold">Training & Consistency Analysis</span>
             <h2 class="text-xl font-bold mt-1">Side-by-Side Question & Answer Comparison</h2>
-            <p class="text-xs text-slate-300 mt-0.5">Type directly into Question A or B search boxes to filter and select questions for comparison.</p>
+            <p class="text-xs text-slate-300 mt-0.5">Click into Question A or B search boxes to automatically clear and search across all questions.</p>
           </div>
           <button onclick="autoPickSimilarPair()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-xl shadow transition flex items-center space-x-2">
             <i class="fa-solid fa-wand-magic-sparkles"></i>
@@ -320,6 +320,7 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Question A Live Combobox Search -->
           <div class="bg-white p-5 rounded-2xl border border-indigo-200 shadow-sm space-y-3 relative">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 flex items-center space-x-1.5">
@@ -342,6 +343,7 @@
             </div>
           </div>
 
+          <!-- Question B Live Combobox Search -->
           <div class="bg-white p-5 rounded-2xl border border-purple-200 shadow-sm space-y-3 relative">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold uppercase tracking-wider text-purple-600 flex items-center space-x-1.5">
@@ -579,7 +581,7 @@
         </div>
       </div>
 
-      <!-- PAGE 5: INSIGHTS ENGINE & RULE MANAGER WITH SEARCHABLE WORKBENCH -->
+      <!-- PAGE 5: INSIGHTS ENGINE & RULE MANAGER WITH AUTO-CLEARING COMBOBOXES -->
       <div id="page-5" class="hidden space-y-6">
         <div class="bg-gradient-to-r from-emerald-950 via-slate-900 to-indigo-950 text-white p-6 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
@@ -655,7 +657,7 @@
           </div>
         </div>
 
-        <!-- SEARCHABLE FORMULA INSPECTOR WORKBENCH -->
+        <!-- SEARCHABLE FORMULA INSPECTOR WORKBENCH WITH AUTO-CLEAR -->
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
           <div class="border-b border-slate-100 pb-3">
             <h3 class="text-sm font-bold text-slate-900">Live Formula Inspector Workbench</h3>
@@ -667,7 +669,7 @@
               <label class="block text-xs font-bold text-indigo-700 uppercase tracking-wider">Inspector Card A</label>
               <div class="relative">
                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
-                <input type="text" id="p5-combobox-q1-input" onfocus="showP5ComboboxList('q1')" oninput="onP5ComboboxInput('q1')" placeholder="Search card A by keywords..." 
+                <input type="text" id="p5-combobox-q1-input" onfocus="showP5ComboboxList('q1')" oninput="onP5ComboboxInput('q1')" placeholder="Type keywords to search Card A..." 
                   class="w-full pl-9 pr-8 py-2 bg-indigo-50/50 border border-indigo-200 rounded-xl text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none transition">
                 <button onclick="clearP5Combobox('q1')" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 text-xs">
                   <i class="fa-solid fa-xmark"></i>
@@ -680,7 +682,7 @@
               <label class="block text-xs font-bold text-purple-700 uppercase tracking-wider">Inspector Card B</label>
               <div class="relative">
                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
-                <input type="text" id="p5-combobox-q2-input" onfocus="showP5ComboboxList('q2')" oninput="onP5ComboboxInput('q2')" placeholder="Search card B by keywords..." 
+                <input type="text" id="p5-combobox-q2-input" onfocus="showP5ComboboxList('q2')" oninput="onP5ComboboxInput('q2')" placeholder="Type keywords to search Card B..." 
                   class="w-full pl-9 pr-8 py-2 bg-purple-50/50 border border-purple-200 rounded-xl text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-purple-500 focus:bg-white focus:outline-none transition">
                 <button onclick="clearP5Combobox('q2')" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 text-xs">
                   <i class="fa-solid fa-xmark"></i>
@@ -1594,7 +1596,7 @@
       updateComparisonView();
     }
 
-    // PAGE 2: LIVE SEARCH COMBOBOX HANDLERS
+    // PAGE 2: LIVE SEARCH COMBOBOX HANDLERS WITH AUTO-CLEAR ON FOCUS
     function updateComboboxInputLabels() {
       const q1 = window.currentData.find(d => d.id === selectedQ1Id);
       const q2 = window.currentData.find(d => d.id === selectedQ2Id);
@@ -1607,8 +1609,9 @@
     }
 
     function showComboboxList(targetKey) {
-      const query = document.getElementById(`combobox-${targetKey}-input`).value.toLowerCase().trim();
-      renderComboboxResults(targetKey, query);
+      const input = document.getElementById(`combobox-${targetKey}-input`);
+      if (input) input.value = ''; // AUTO-CLEAR CURRENT VALUE ON CLICK
+      renderComboboxResults(targetKey, '');
       document.getElementById(`combobox-${targetKey}-results`).classList.remove('hidden');
     }
 
@@ -1663,7 +1666,7 @@
       }
     }
 
-    // PAGE 5: LIVE SEARCH COMBOBOX HANDLERS FOR INSPECTOR WORKBENCH
+    // PAGE 5: LIVE SEARCH COMBOBOX HANDLERS WITH AUTO-CLEAR ON FOCUS
     function updateP5ComboboxInputLabels() {
       const q1 = window.currentData.find(d => d.id === p5InspectorQ1Id);
       const q2 = window.currentData.find(d => d.id === p5InspectorQ2Id);
@@ -1676,8 +1679,9 @@
     }
 
     function showP5ComboboxList(targetKey) {
-      const query = document.getElementById(`p5-combobox-${targetKey}-input`).value.toLowerCase().trim();
-      renderP5ComboboxResults(targetKey, query);
+      const input = document.getElementById(`p5-combobox-${targetKey}-input`);
+      if (input) input.value = ''; // AUTO-CLEAR CURRENT VALUE ON CLICK
+      renderP5ComboboxResults(targetKey, '');
       document.getElementById(`p5-combobox-${targetKey}-results`).classList.remove('hidden');
     }
 
@@ -1732,7 +1736,7 @@
       }
     }
 
-    function calculateSimilarity(text1, text2) {
+   function calculateSimilarity(text1, text2) {
   // 1. Removes common filler words (stop words)
   const stopWords = new Set(['what', 'does', 'flex', 'this', 'that', 'with', 'from', 'have', 'your', 'about', 'can', 'will', 'show', 'for', 'the', 'and', 'are']);
   
@@ -1789,78 +1793,77 @@
       generateCoachingTakeaways(itemA, itemB, simScore);
     }
 
-    // DYNAMIC RULE EVALUATOR FOR COACHING TAKEAWAYS
-   function generateCoachingTakeaways(itemA, itemB, simScore) {
-  const container = document.getElementById('coaching-takeaways');
-  const sameRep = itemA.answeredBy === itemB.answeredBy;
-  const sameTopic = itemA.topic === itemB.topic;
+    // DYNAMIC CONDITIONAL RULE EVALUATOR FOR COACHING TAKEAWAYS
+    function generateCoachingTakeaways(itemA, itemB, simScore) {
+      const container = document.getElementById('coaching-takeaways');
+      const sameRep = itemA.answeredBy === itemB.answeredBy;
+      const sameTopic = itemA.topic === itemB.topic;
 
-  const wordsA = itemA.answer.split(' ').length;
-  const wordsB = itemB.answer.split(' ').length;
-  const threshold = window.insightConfig.shortWordThreshold || 15;
+      const wordsA = itemA.answer.split(' ').length;
+      const wordsB = itemB.answer.split(' ').length;
+      const threshold = window.insightConfig.shortWordThreshold || 15;
 
-  // Dynamically evaluate active rules conditionally
-  let triggeredRulesHTML = "";
-  if (window.insightConfig.customRules) {
-    window.insightConfig.customRules.filter(r => r.enabled).forEach(r => {
-      let triggered = false;
-      let note = "";
+      let triggeredRulesHTML = "";
+      if (window.insightConfig.customRules) {
+        window.insightConfig.customRules.filter(r => r.enabled).forEach(r => {
+          let triggered = false;
+          let note = "";
 
-      // Condition 1: Brevity Rule (Only triggers if an answer is below threshold)
-      if (r.id === 1 && (wordsA < threshold || wordsB < threshold)) {
-        triggered = true;
-        note = ` (Answer length: ${wordsA} vs ${wordsB} words — threshold: ${threshold})`;
-      } 
-      // Condition 2: Multi-Rep Coverage (Only triggers if different reps handled them)
-      else if (r.id === 2 && !sameRep) {
-        triggered = true;
-        note = ` (${itemA.answeredBy} vs ${itemB.answeredBy})`;
+          // Condition 1: Brevity Warning
+          if (r.id === 1 && (wordsA < threshold || wordsB < threshold)) {
+            triggered = true;
+            note = ` (${wordsA} vs ${wordsB} words — threshold: ${threshold})`;
+          } 
+          // Condition 2: Multi-Rep Coverage Warning
+          else if (r.id === 2 && !sameRep) {
+            triggered = true;
+            note = ` (${itemA.answeredBy} vs ${itemB.answeredBy})`;
+          }
+          // Condition 3: Cross-Category Warning
+          else if (r.id === 3 && !sameTopic) {
+            triggered = true;
+            note = ` (${itemA.topic} vs ${itemB.topic})`;
+          }
+          // Custom User Tips
+          else if (r.id > 3) {
+            triggered = true;
+          }
+
+          if (triggered) {
+            triggeredRulesHTML += `<li class="flex items-start space-x-1.5 text-amber-800 font-medium mt-1 bg-amber-50/80 p-1.5 rounded-lg border border-amber-200/60">
+              <i class="fa-solid fa-triangle-exclamation text-amber-600 text-xs mt-0.5 shrink-0"></i>
+              <span>${r.text}${note}</span>
+            </li>`;
+          }
+        });
       }
-      // Condition 3: Cross-Category Flag (Only triggers if topics differ)
-      else if (r.id === 3 && !sameTopic) {
-        triggered = true;
-        note = ` (${itemA.topic} vs ${itemB.topic})`;
-      }
-      // Custom User Tips: Trigger on keyword or always active if generic tip
-      else if (r.id > 3) {
-        triggered = true;
-      }
 
-      if (triggered) {
-        triggeredRulesHTML += `<li class="flex items-start space-x-1.5 text-amber-800 font-medium mt-1 bg-amber-50/80 p-1.5 rounded-lg border border-amber-200/60">
-          <i class="fa-solid fa-triangle-exclamation text-amber-600 text-xs mt-0.5 shrink-0"></i>
-          <span>${r.text}${note}</span>
-        </li>`;
-      }
-    });
-  }
-
-  container.innerHTML = `
-    <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-1">
-      <strong class="text-slate-800 block font-semibold flex items-center space-x-1.5">
-        <i class="fa-solid fa-user-check text-indigo-600"></i>
-        <span>Representative Consistency</span>
-      </strong>
-      <p class="text-slate-600">${sameRep ? `Handled consistently by <strong>${itemA.answeredBy}</strong>.` : `Handled by different reps: <strong>${itemA.answeredBy}</strong> vs <strong>${itemB.answeredBy}</strong>.`}</p>
-    </div>
-    <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-1">
-      <strong class="text-slate-800 block font-semibold flex items-center space-x-1.5">
-        <i class="fa-solid fa-tag text-purple-600"></i>
-        <span>Topic Alignment</span>
-      </strong>
-      <p class="text-slate-600">${sameTopic ? `Both fall under <strong>${itemA.topic}</strong>.` : `Cross-category comparison (${itemA.topic} vs${itemB.topic}).`}</p>
-    </div>
-    <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-1.5">
-      <strong class="text-slate-800 block font-semibold flex items-center space-x-1.5">
-        <i class="fa-solid fa-flag text-amber-600"></i>
-        <span>Triggered Coaching Flags</span>
-      </strong>
-      <ul class="text-[11px] space-y-1">
-        ${triggeredRulesHTML || '<li class="text-emerald-700 font-medium flex items-center space-x-1"><i class="fa-solid fa-circle-check text-emerald-500 mr-1"></i>No coaching warnings triggered for this pair.</li>'}
-      </ul>
-    </div>
-  `;
-}
+      container.innerHTML = `
+        <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-1">
+          <strong class="text-slate-800 block font-semibold flex items-center space-x-1.5">
+            <i class="fa-solid fa-user-check text-indigo-600"></i>
+            <span>Representative Consistency</span>
+          </strong>
+          <p class="text-slate-600">${sameRep ? `Handled consistently by <strong>${itemA.answeredBy}</strong>.` : `Handled by different reps: <strong>${itemA.answeredBy}</strong> vs <strong>${itemB.answeredBy}</strong>.`}</p>
+        </div>
+        <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-1">
+          <strong class="text-slate-800 block font-semibold flex items-center space-x-1.5">
+            <i class="fa-solid fa-tag text-purple-600"></i>
+            <span>Topic Alignment</span>
+          </strong>
+          <p class="text-slate-600">${sameTopic ? `Both fall under <strong>${itemA.topic}</strong>.` : `Cross-category comparison (${itemA.topic} vs ${itemB.topic}).`}</p>
+        </div>
+        <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-1.5">
+          <strong class="text-slate-800 block font-semibold flex items-center space-x-1.5">
+            <i class="fa-solid fa-flag text-amber-600"></i>
+            <span>Triggered Coaching Flags</span>
+          </strong>
+          <ul class="text-[11px] space-y-1">
+            ${triggeredRulesHTML || '<li class="text-emerald-700 font-medium flex items-center space-x-1"><i class="fa-solid fa-circle-check text-emerald-500 mr-1"></i>No coaching warnings triggered for this pair.</li>'}
+          </ul>
+        </div>
+      `;
+    }
 
     function autoPickSimilarPair() {
       let maxSim = -1;
