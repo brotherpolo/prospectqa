@@ -1568,41 +1568,28 @@
       select2.innerHTML = items2.map(d => `<option value="${d.id}" ${d.id === selectedQ2Id ? 'selected' : ''}>[#${d.id}] ${d.askedBy}: ${d.question.substring(0, 60)}...</option>`).join('');
     }
 
-    function calculateSimilarity(text1, text2) {
-      const stopWords = new Set([
-        'what', 'does', 'flex', 'this', 'that', 'with', 'from', 'have', 'your', 
-        'about', 'can', 'will', 'show', 'for', 'the', 'and', 'are', 'how', 'is', 
-        'could', 'would', 'should', 'been', 'being', 'each', 'other'
-      ]);
-      
-      const tokenize = str => str.toLowerCase()
-        .replace(/[^\w\s]/g, '')
-        .split(/\s+/)
-        .filter(w => w.length > 2 && !stopWords.has(w));
-      
-      const words1 = tokenize(text1);
-      const words2 = tokenize(text2);
+  function calculateSimilarity(text1, text2) {
+  // 1. Removes common filler words (stop words)
+  const stopWords = new Set(['what', 'does', 'flex', 'this', 'that', 'with', 'from', 'have', 'your', 'about', 'can', 'will', 'show', 'for', 'the', 'and', 'are']);
+  
+  // 2. Tokenizes text: converts to lowercase, strips punctuation, and breaks into individual words
+  const tokenize = str => str.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 2 && !stopWords.has(w));
+  
+  const words1 = tokenize(text1);
+  const words2 = tokenize(text2);
 
-      const set1 = new Set(words1);
-      const set2 = new Set(words2);
+  // 3. Converts word arrays into unique Sets (ignoring word order and sentence structure)
+  const set1 = new Set(words1);
+  const set2 = new Set(words2);
 
-      if (set1.size === 0 || set2.size === 0) return 0;
+  // 4. Calculates Jaccard Index: (Common Unique Words) / (Total Combined Unique Words)
+  const intersection = new Set([...set1].filter(x => set2.has(x)));
+  const union = new Set([...set1, ...set2]);
 
-      const intersection = new Set([...set1].filter(x => set2.has(x)));
+  if (union.size === 0) return 0;
+  return Math.round((intersection.size / union.size) * 100);
+}
 
-      const minSetSize = Math.min(set1.size, set2.size);
-      const overlapScore = intersection.size / minSetSize;
-
-      const union = new Set([...set1, ...set2]);
-      const jaccardScore = intersection.size / union.size;
-
-      const oW = (window.insightConfig.overlapRatio || 70) / 100;
-      const jW = (window.insightConfig.jaccardRatio || 30) / 100;
-
-      const blendedScore = (overlapScore * oW) + (jaccardScore * jW);
-
-      return Math.round(blendedScore * 100);
-    }
 
     function updateComparisonView() {
       selectedQ1Id = parseInt(document.getElementById('select-q1').value);
